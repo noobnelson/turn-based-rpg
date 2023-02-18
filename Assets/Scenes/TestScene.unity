@@ -147,7 +147,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 290214150}
   m_LocalRotation: {x: 0.23911765, y: 0.3696438, z: -0.09904577, w: 0.89239913}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 3, y: 0, z: 3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 2023096736}
@@ -164,6 +164,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1692766145}
   - component: {fileID: 1692766144}
+  - component: {fileID: 1692766146}
+  - component: {fileID: 1692766147}
   m_Layer: 0
   m_Name: BlockManager
   m_TagString: Untagged
@@ -184,7 +186,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapFile: {fileID: 4900000, guid: ceda91bacc7d8064a90be522cc4fb44b, type: 3}
-  blockPrefab: {fileID: 8097086924525019855, guid: 0e36e050b6a13d044ab7ead4979029aa, type: 3}
+  blockTypes:
+  - {fileID: 7009040599375446454, guid: 1159ac401b3e1944390bfee86ebf1185, type: 3}
+  - {fileID: 4412093230070985106, guid: 6a4f72f1af8bd434d913100189029228, type: 3}
+  charForBlockTypes: 31003000
 --- !u!4 &1692766145
 Transform:
   m_ObjectHideFlags: 0
@@ -199,6 +204,30 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1692766146
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1692766143}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7572fa54595dbd4cb914919ab155758, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1692766147
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1692766143}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aee588ab07efc184887f131f9b53748d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2023096733
 GameObject:
   m_ObjectHideFlags: 0
