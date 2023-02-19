@@ -4,7 +4,8 @@ using UnityEngine;
 
 public abstract class Block : MonoBehaviour
 {
-    //private int cost = 1;
+    
+
     private Transform cellAvailable;
     private Transform cellUnvailable;
 

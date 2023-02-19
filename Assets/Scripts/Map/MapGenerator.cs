@@ -11,10 +11,11 @@ public class MapGenerator : MonoBehaviour
     private TextAsset mapFile;
     private string mapFilePath;
 
-    // KEY FOR DICTIONARY
+    // Since Unity doesn't show dictionaries in Inspector, create own Key,Value
+    // KEY
     [SerializeField]
     private List<char> charForBlockTypes = new List<char>();
-    // VALUE FOR DICTIONARY
+    // VALUE
     [SerializeField]
     private List<Block> blockTypes = new List<Block>();
     private Dictionary<char, Block> block = new Dictionary<char, Block>();
@@ -24,20 +25,18 @@ public class MapGenerator : MonoBehaviour
 
     void Start()
     {
-        for (int i = 0; i < blockTypes.Count; i++)
+        // Fill the block dictionary 
+        for (int i = 0; i < blockTypes.Count; i++) 
         {
             block.Add(charForBlockTypes[i], blockTypes[i]);
         }
 
+        // Use file to find dimensions ie. fileText array : ["000"]["000"]["000"] so 3x3 grid
         mapFilePath = AssetDatabase.GetAssetPath(mapFile);
+        string[] fileText = File.ReadAllLines(mapFilePath);
+        int xGridCount = fileText[0].Length;
+        int zGridCount = fileText.Length;
 
-        int zGridCount = File.ReadAllLines(mapFilePath).Length;
-        int xGridCount = 0;
-        foreach (string line in File.ReadLines(mapFilePath))
-        {
-            xGridCount = line.Length;
-            break;
-        }
         BlockGrid = new Block[xGridCount, zGridCount];
         BlockGridCosts = new int[xGridCount, zGridCount];
 
