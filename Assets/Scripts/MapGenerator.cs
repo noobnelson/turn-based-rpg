@@ -9,17 +9,18 @@ public class MapGenerator : MonoBehaviour
 {
     [SerializeField]
     private TextAsset mapFile;
-    [SerializeField]
-    private Block[,] blockGrid;
+    private string mapFilePath;
 
-    [SerializeField]
-    private List<Block> blockTypes = new List<Block>();
+    // KEY FOR DICTIONARY
     [SerializeField]
     private List<char> charForBlockTypes = new List<char>();
-
+    // VALUE FOR DICTIONARY
+    [SerializeField]
+    private List<Block> blockTypes = new List<Block>();
     private Dictionary<char, Block> block = new Dictionary<char, Block>();
 
-    private string mapFilePath;
+    public Block[,] BlockGrid { get; private set; }
+    public int[,] BlockGridCosts { get; private set; }
 
     void Start()
     {
@@ -37,9 +38,10 @@ public class MapGenerator : MonoBehaviour
             xGridCount = line.Length;
             break;
         }
-        blockGrid = new Block[xGridCount, zGridCount];
+        BlockGrid = new Block[xGridCount, zGridCount];
+        BlockGridCosts = new int[xGridCount, zGridCount];
 
-        CreateMap(blockGrid);
+        CreateMap(BlockGrid);
     }
 
     public void CreateMap(Block[,] grid)
@@ -57,6 +59,7 @@ public class MapGenerator : MonoBehaviour
                 newBlock.transform.SetParent(parent.transform);
                 newBlock.name = newBlock.name + xFileCount + zFileCount;
                 grid[xFileCount, zFileCount] = newBlock;
+                BlockGridCosts[xFileCount, zFileCount] = newBlock.MovementCost;
 
                 zFileCount++;
             }

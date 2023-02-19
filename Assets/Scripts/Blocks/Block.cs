@@ -2,11 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Block : MonoBehaviour
+public abstract class Block : MonoBehaviour
 {
     //private int cost = 1;
     private Transform cellAvailable;
     private Transform cellUnvailable;
+
+    [SerializeField]
+    private int movementCost;
+    public int MovementCost { get{ return movementCost; } private set{ movementCost = value; } }
 
     void Start()
     {
