@@ -6,7 +6,8 @@ public abstract class Entity : MonoBehaviour
 {
     [SerializeField]
     internal EntityStatsScriptableObject entityStats;
-    
+    [SerializeField]
+
     void Start()
     {
         

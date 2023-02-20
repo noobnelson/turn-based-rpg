@@ -11,7 +11,7 @@ public class GridSelector : MonoBehaviour
 
     void Start()
     {
-        playerInput = GetComponent<PlayerInput>();
+        playerInput = FindObjectOfType<PlayerInput>();
         cam = Camera.main;
         layerMask = 1 << 6;
     }

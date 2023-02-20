@@ -7,10 +7,6 @@ using System;
 
 public class MapGenerator : MonoBehaviour
 {
-    [SerializeField]
-    private TextAsset mapFile;
-    private string mapFilePath;
-
     // Since Unity doesn't show dictionaries in Inspector, create own Key,Value
     // KEY
     [SerializeField]
@@ -21,10 +17,12 @@ public class MapGenerator : MonoBehaviour
     private Dictionary<char, Block> block = new Dictionary<char, Block>();
 
     private BlockManager blockManager;
+    private FileManager fileManager;
 
-    void Start()
+    void Awake()
     {
         blockManager = FindObjectOfType<BlockManager>();
+        fileManager = FindObjectOfType<FileManager>();
 
         // Fill the block dictionary 
         for (int i = 0; i < blockTypes.Count; i++) 
@@ -33,25 +31,23 @@ public class MapGenerator : MonoBehaviour
         }
 
         // Use file to find dimensions ie. fileText array : ["000"]["000"]["000"] so 3x3 grid
-        mapFilePath = AssetDatabase.GetAssetPath(mapFile);
-        string[] fileText = File.ReadAllLines(mapFilePath);
-        int xGridCount = fileText[0].Length;
-        int zGridCount = fileText.Length;
+        int xGridCount = fileManager.FileText[0].Length;
+        int zGridCount = fileManager.FileText.Length;
         
         blockManager.BlockGrid = new Block[xGridCount, zGridCount];
         blockManager.BlockGridCosts = new int[xGridCount, zGridCount];
 
-        CreateMap(blockManager.BlockGrid, blockManager.BlockGridCosts);
+        CreateMap(blockManager.BlockGrid, blockManager.BlockGridCosts, fileManager.FileText);
     }
 
-    public void CreateMap(Block[,] grid, int[,] gridCosts)
+    public void CreateMap(Block[,] grid, int[,] gridCosts, string[] mapText)
     {
         GameObject parent = new GameObject("MapParent");
 
         int xFileCount = 0;
         int zFileCount = 0;
 
-        foreach (string line in File.ReadLines(mapFilePath))
+        foreach (string line in mapText)
         {
             foreach (char c in line)
             {
