@@ -2,13 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class EntityManager : MonoBehaviour
+public class EntityManager : MonoBehaviour
 {
-    [SerializeField]
-    internal EntityStatsScriptableObject entityStats;
-    
+    public List<Entity> entities = new List<Entity>();
+
     void Start()
     {
-        
+        Entity[] entities = FindObjectsOfType<Entity>();
+        this.entities.AddRange(entities);
     }
 }

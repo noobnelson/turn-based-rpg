@@ -20,11 +20,12 @@ public class MapGenerator : MonoBehaviour
     private List<Block> blockTypes = new List<Block>();
     private Dictionary<char, Block> block = new Dictionary<char, Block>();
 
-    public Block[,] BlockGrid { get; private set; }
-    public int[,] BlockGridCosts { get; private set; }
+    private BlockManager blockManager;
 
     void Start()
     {
+        blockManager = FindObjectOfType<BlockManager>();
+
         // Fill the block dictionary 
         for (int i = 0; i < blockTypes.Count; i++) 
         {
@@ -36,14 +37,14 @@ public class MapGenerator : MonoBehaviour
         string[] fileText = File.ReadAllLines(mapFilePath);
         int xGridCount = fileText[0].Length;
         int zGridCount = fileText.Length;
+        
+        blockManager.BlockGrid = new Block[xGridCount, zGridCount];
+        blockManager.BlockGridCosts = new int[xGridCount, zGridCount];
 
-        BlockGrid = new Block[xGridCount, zGridCount];
-        BlockGridCosts = new int[xGridCount, zGridCount];
-
-        CreateMap(BlockGrid);
+        CreateMap(blockManager.BlockGrid, blockManager.BlockGridCosts);
     }
 
-    public void CreateMap(Block[,] grid)
+    public void CreateMap(Block[,] grid, int[,] gridCosts)
     {
         GameObject parent = new GameObject("MapParent");
 
@@ -58,7 +59,7 @@ public class MapGenerator : MonoBehaviour
                 newBlock.transform.SetParent(parent.transform);
                 newBlock.name = newBlock.name + xFileCount + zFileCount;
                 grid[xFileCount, zFileCount] = newBlock;
-                BlockGridCosts[xFileCount, zFileCount] = newBlock.MovementCost;
+                gridCosts[xFileCount, zFileCount] = newBlock.MovementCost;
 
                 zFileCount++;
             }

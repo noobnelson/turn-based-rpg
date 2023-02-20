@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class Block : MonoBehaviour
 {
-    
+    private Entity occupantEntity;
 
     private Transform cellAvailable;
     private Transform cellUnvailable;
@@ -27,5 +27,15 @@ public abstract class Block : MonoBehaviour
     public void HighlightCellUnavailable(bool b)
     {
         cellUnvailable.gameObject.SetActive(b);
+    }
+
+    public void AddEntity(Entity entity)
+    {
+        occupantEntity = entity;
+    }
+
+    public void RemoveEntity()
+    {
+        occupantEntity = null;
     }
 }
