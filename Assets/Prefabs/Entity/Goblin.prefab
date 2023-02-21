@@ -139,4 +139,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24d6ff5b8e99b7140b92c777778d45cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  entityStats: {fileID: 11400000, guid: 0dddf7b1d7d1ba449967c33f7f2ea15d, type: 2}
+  maxHealth: 2
+  movementPoints: 2
+  maxEnergy: 2
+  attackPower: 2

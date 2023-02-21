@@ -23,9 +23,13 @@ public class MapGenerator : MonoBehaviour
     {
         blockManager = FindObjectOfType<BlockManager>();
         fileManager = FindObjectOfType<FileManager>();
+        
+    }
 
+    void Start()
+    {
         // Fill the block dictionary 
-        for (int i = 0; i < blockTypes.Count; i++) 
+        for (int i = 0; i < blockTypes.Count; i++)
         {
             block.Add(charForBlockTypes[i], blockTypes[i]);
         }
@@ -33,11 +37,11 @@ public class MapGenerator : MonoBehaviour
         // Use file to find dimensions ie. fileText array : ["000"]["000"]["000"] so 3x3 grid
         int xGridCount = fileManager.FileText[0].Length;
         int zGridCount = fileManager.FileText.Length;
-        
-        blockManager.BlockGrid = new Block[xGridCount, zGridCount];
-        blockManager.BlockGridCosts = new int[xGridCount, zGridCount];
 
-        CreateMap(blockManager.BlockGrid, blockManager.BlockGridCosts, fileManager.FileText);
+        blockManager.blockGrid = new Block[xGridCount, zGridCount];
+        blockManager.blockGridCosts = new int[xGridCount, zGridCount];
+
+        CreateMap(blockManager.blockGrid, blockManager.blockGridCosts, fileManager.FileText);
     }
 
     public void CreateMap(Block[,] grid, int[,] gridCosts, string[] mapText)

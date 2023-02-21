@@ -4,10 +4,10 @@ using UnityEngine;
 
 public abstract class Block : MonoBehaviour
 {
-    private Entity occupantEntity;
+    public Entity occupantEntity;
 
-    private Transform cellAvailable;
-    private Transform cellUnvailable;
+    public Transform cellAvailable;
+    public Transform cellUnvailable;
 
     [SerializeField]
     private int movementCost;
@@ -17,25 +17,5 @@ public abstract class Block : MonoBehaviour
     {
         cellAvailable = transform.GetChild(0);
         cellUnvailable = transform.GetChild(1);
-    }
-
-    public void HighlightCellAvailable(bool b)
-    {
-        cellAvailable.gameObject.SetActive(b);
-    }
-
-    public void HighlightCellUnavailable(bool b)
-    {
-        cellUnvailable.gameObject.SetActive(b);
-    }
-
-    public void AddEntity(Entity entity)
-    {
-        occupantEntity = entity;
-    }
-
-    public void RemoveEntity()
-    {
-        occupantEntity = null;
     }
 }

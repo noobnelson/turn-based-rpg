@@ -7,17 +7,15 @@ public class EntityStatsScriptableObject : ScriptableObject
 {
     [SerializeField]
     private int maxHealth;
-    internal int currentHealth;
-
+    public int CurrentHealth { get; private set; }
     [SerializeField]
     private int movementPoints;
-    internal int currentMovementPoints;
-
+    public int CurrentMovementPoints { get; private set; }
     [SerializeField]
     private int maxEnergy;
-    internal int currentEnergy;
-
+    public int CurrentEnergy { get; private set; }
     [SerializeField]
     private int attackPower;
-    internal int currentAttackPower;
+    public int CurrentAttackPower { get; private set; }
+
 }
