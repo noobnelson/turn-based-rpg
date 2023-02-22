@@ -31,7 +31,6 @@ public class EntityManager : MonoBehaviour
             Vector3 entityPosition = selectedBlock.transform.position + yPositionOffset;
             Entity entity = Instantiate(entities[i], entityPosition, Quaternion.identity);
             blockManager.AddEntity(selectedBlock, entity);
-
         }
     }
 
@@ -39,7 +38,7 @@ public class EntityManager : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            blockManager.AvailableMoves(entitiesCurrentPosition[0], blockManager.blockGridCosts, 3);
+            blockManager.AvailableMoves(entitiesCurrentPosition[0], 3);
         }
     }
 }

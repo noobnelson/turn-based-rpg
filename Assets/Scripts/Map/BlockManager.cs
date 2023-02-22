@@ -5,8 +5,7 @@ using UnityEngine;
 public class BlockManager : MonoBehaviour
 {
     public Block[,] blockGrid;
-    public int[,] blockGridCosts;
-
+    private List<Vector2Int> neighbourBlocks = new List<Vector2Int>() { Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left };
     private EntityManager entityManager;
 
     void Awake()
@@ -34,96 +33,62 @@ public class BlockManager : MonoBehaviour
         block.cellUnvailable.gameObject.SetActive(b);
     }
 
-    public void AvailableMovement(Vector2Int entityPosition)
+    public void AvailableMoves(Vector2Int currentPos, int movementPoints)
     {
-
-        int currentX = entityPosition.x;
-        int currentZ = entityPosition.y;
-        Block currentBlock = blockGrid[currentX, currentZ];
-
-        int movementPoints = currentBlock.occupantEntity.CurrentMovementPoints;
-        Debug.Log(movementPoints);
-        for (int i = 1; i < movementPoints + 1; i++)
-        {
-            Vector2Int north = new Vector2Int(Mathf.Clamp(currentX, 0, blockGrid.GetLength(0) - 1), Mathf.Clamp(currentZ - i, 0, blockGrid.GetLength(1) - 1));
-            Vector2Int east = new Vector2Int(Mathf.Clamp(currentX + i, 0, blockGrid.GetLength(0) - 1), Mathf.Clamp(currentZ, 0, blockGrid.GetLength(1) - 1));
-            Vector2Int south = new Vector2Int(Mathf.Clamp(currentX, 0, blockGrid.GetLength(0) - 1), Mathf.Clamp(currentZ + i, 0, blockGrid.GetLength(1) - 1));
-            Vector2Int west = new Vector2Int(Mathf.Clamp(currentX - i, 0, blockGrid.GetLength(0) - 1), Mathf.Clamp(currentZ, 0, blockGrid.GetLength(1) - 1));
-
-            HighlightCellAvailable(blockGrid[north.x, north.y], true);
-            HighlightCellAvailable(blockGrid[east.x, east.y], true);
-            HighlightCellAvailable(blockGrid[south.x, south.y], true);
-            HighlightCellAvailable(blockGrid[west.x, west.y], true);
-
-            // Mathf.Clamp(0, 0, blockGrid.GetLength(0)); // rows/height/x
-            // Mathf.Clamp(0, 0, blockGrid.GetLength(1)); // columns/width/z
-        }
-    }
-
-    public void AvailableMoves(Vector2Int currentPos, int[,] costGrid, int movementPoints)
-    {
-        List<Vector2Int> neighbourBlocks = new List<Vector2Int>();
-        neighbourBlocks.Add(new Vector2Int(0, -1)); // North
-        neighbourBlocks.Add(new Vector2Int(1, 0)); // East
-        neighbourBlocks.Add(new Vector2Int(0, 1)); // South
-        neighbourBlocks.Add(new Vector2Int(-1, 0)); // West
-
         List<Vector2Int> accessedBlocks = new List<Vector2Int>();
-        Queue<List<Vector2Int>> currentPaths = new Queue<List<Vector2Int>>();
+        List<List<Vector2Int>> incompletePaths = new List<List<Vector2Int>>();
         List<List<Vector2Int>> completedPaths = new List<List<Vector2Int>>();
+
         accessedBlocks.Add(currentPos);
+        incompletePaths.Add(new List<Vector2Int>() { currentPos });
+        int oldPathsCount = 0;
 
-        currentPaths.Enqueue(new List<Vector2Int>() {currentPos});
-        int dequeueCount = 0;
-
-        while (currentPaths.Count > 0)
+        while (incompletePaths.Count > 0)
         {
-            dequeueCount = currentPaths.Count;
-            List<List<Vector2Int>> listToAdd = new List<List<Vector2Int>>();
+            oldPathsCount = incompletePaths.Count;
+            List<List<Vector2Int>> currentPathToAdd = new List<List<Vector2Int>>();
 
-            foreach (List<Vector2Int> list in currentPaths)
+            foreach (List<Vector2Int> currentPath in incompletePaths)
             {
                 foreach (Vector2Int position in neighbourBlocks)
                 {
-                    Vector2Int value = list[list.Count - 1] + position;
-                    if (value.x < 0 || value.x > costGrid.GetLength(0) - 1 || value.y < 0 || value.y > costGrid.GetLength(1) - 1 || accessedBlocks.Contains(value))
+                    Vector2Int nextPathPosition = currentPath[currentPath.Count - 1] + position;
+                    if (nextPathPosition.x >= 0 && nextPathPosition.x < blockGrid.GetLength(0) && nextPathPosition.y > 0 && nextPathPosition.y < blockGrid.GetLength(1) && !accessedBlocks.Contains(nextPathPosition))
                     {
+                        List<Vector2Int> extendedPath = new List<Vector2Int>(currentPath);
+                        extendedPath.Add(nextPathPosition);
 
-                    }
-                    else
-                    {
-                        List<Vector2Int> newList = new List<Vector2Int>(list);
-                        newList.Add(value);
-
-                        if (newList.Count == movementPoints + 1)
+                        if (extendedPath.Count == movementPoints + 1)
                         {
-                            completedPaths.Add(newList);
-                            Debug.Log("Completed");
+                            completedPaths.Add(extendedPath);
                         }
                         else
                         {
-                            listToAdd.Add(newList);
+                            currentPathToAdd.Add(extendedPath);
                         }
-
-                        accessedBlocks.Add(value);
+                        accessedBlocks.Add(nextPathPosition);
                     }
                 }
             }
 
-            for (int i = 0; i < dequeueCount; i++)
+            for (int i = 0; i < oldPathsCount; i++)
             {
-                currentPaths.Dequeue();
+                incompletePaths.RemoveAt(0);
             }
 
-            for (int x = 0; x < listToAdd.Count; x++)
+            for (int x = 0; x < currentPathToAdd.Count; x++)
             {
-                currentPaths.Enqueue(listToAdd[x]);
+                incompletePaths.Add(currentPathToAdd[x]);
             }
         }
 
         foreach (Vector2Int vector in accessedBlocks)
         {
-            HighlightCellAvailable(blockGrid[vector.x, vector.y], true);
+            Block currentBlock = blockGrid[vector.x, vector.y];
+            if (currentBlock.MovementCost == 1)
+            {
+                HighlightCellAvailable(currentBlock, true);
+            }
         }
     }
 }

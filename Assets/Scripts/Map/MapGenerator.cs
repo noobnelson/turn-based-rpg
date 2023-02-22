@@ -23,7 +23,6 @@ public class MapGenerator : MonoBehaviour
     {
         blockManager = FindObjectOfType<BlockManager>();
         fileManager = FindObjectOfType<FileManager>();
-        
     }
 
     void Start()
@@ -39,12 +38,11 @@ public class MapGenerator : MonoBehaviour
         int zGridCount = fileManager.FileText.Length;
 
         blockManager.blockGrid = new Block[xGridCount, zGridCount];
-        blockManager.blockGridCosts = new int[xGridCount, zGridCount];
 
-        CreateMap(blockManager.blockGrid, blockManager.blockGridCosts, fileManager.FileText);
+        CreateMap(blockManager.blockGrid, fileManager.FileText);
     }
 
-    public void CreateMap(Block[,] grid, int[,] gridCosts, string[] mapText)
+    public void CreateMap(Block[,] grid, string[] mapText)
     {
         GameObject parent = new GameObject("MapParent");
 
@@ -59,7 +57,6 @@ public class MapGenerator : MonoBehaviour
                 newBlock.transform.SetParent(parent.transform);
                 newBlock.name = newBlock.name + xFileCount + zFileCount;
                 grid[xFileCount, zFileCount] = newBlock;
-                gridCosts[xFileCount, zFileCount] = newBlock.MovementCost;
 
                 zFileCount++;
             }
