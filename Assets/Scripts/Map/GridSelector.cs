@@ -13,7 +13,7 @@ public class GridSelector : MonoBehaviour
     {
         playerInput = FindObjectOfType<PlayerInput>();
         cam = Camera.main;
-        layerMask = 1 << 6;
+        // layerMask = 1 << 6;
     }
 
     void Update()

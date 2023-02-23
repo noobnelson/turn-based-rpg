@@ -4,8 +4,22 @@ using UnityEngine;
 
 public class BlockManager : MonoBehaviour
 {
+    public struct PathAndCost
+    {
+        public List<Vector2Int> path;
+        public int cost;
+
+        public PathAndCost(List<Vector2Int> path, int cost)
+        {
+            this.path = path;
+            this.cost = cost;
+        }
+    }
+
     public Block[,] blockGrid;
-    private List<Vector2Int> neighbourBlocks = new List<Vector2Int>() { Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left };
+    private List<Vector2Int> neighbourPositions = new List<Vector2Int>() { Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left };
+    private List<List<Vector2Int>> completedPaths = new List<List<Vector2Int>>();
+
     private EntityManager entityManager;
 
     void Awake()
@@ -35,59 +49,62 @@ public class BlockManager : MonoBehaviour
 
     public void AvailableMoves(Vector2Int currentPos, int movementPoints)
     {
-        List<Vector2Int> accessedBlocks = new List<Vector2Int>();
-        List<List<Vector2Int>> incompletePaths = new List<List<Vector2Int>>();
-        List<List<Vector2Int>> completedPaths = new List<List<Vector2Int>>();
-
-        accessedBlocks.Add(currentPos);
-        incompletePaths.Add(new List<Vector2Int>() { currentPos });
+        completedPaths.Clear();
         int oldPathsCount = 0;
 
-        while (incompletePaths.Count > 0)
+        List<Vector2Int> accessedBlocks = new List<Vector2Int>() { currentPos };
+        PathAndCost initialPathAndCost = new PathAndCost(new List<Vector2Int>() { currentPos }, 0); // start position 
+        List<PathAndCost> incompletePathsWithCost = new List<PathAndCost>() { initialPathAndCost }; 
+
+        while (incompletePathsWithCost.Count > 0) 
         {
-            oldPathsCount = incompletePaths.Count;
-            List<List<Vector2Int>> currentPathToAdd = new List<List<Vector2Int>>();
+            oldPathsCount = incompletePathsWithCost.Count;
+            List<PathAndCost> currentPathsWithCostToAdd = new List<PathAndCost>();
 
-            foreach (List<Vector2Int> currentPath in incompletePaths)
+            foreach (PathAndCost currentPathWithCost in incompletePathsWithCost) // go through each unfinished path
             {
-                foreach (Vector2Int position in neighbourBlocks)
+                foreach (Vector2Int position in neighbourPositions) // check the 4 surroundings 
                 {
-                    Vector2Int nextPathPosition = currentPath[currentPath.Count - 1] + position;
-                    if (nextPathPosition.x >= 0 && nextPathPosition.x < blockGrid.GetLength(0) && nextPathPosition.y > 0 && nextPathPosition.y < blockGrid.GetLength(1) && !accessedBlocks.Contains(nextPathPosition))
-                    {
-                        List<Vector2Int> extendedPath = new List<Vector2Int>(currentPath);
-                        extendedPath.Add(nextPathPosition);
+                    int lastPositionInPath = currentPathWithCost.path.Count - 1;
+                    Vector2Int nextPathPosition = currentPathWithCost.path[lastPositionInPath] + position;
 
-                        if (extendedPath.Count == movementPoints + 1)
+                    // check if we've visited this block position and if it is within the grid
+                    if (!accessedBlocks.Contains(nextPathPosition) && nextPathPosition.x >= 0 && nextPathPosition.x < blockGrid.GetLength(0) && nextPathPosition.y > 0 && nextPathPosition.y < blockGrid.GetLength(1))
+                    {
+                        Block currentBlock = blockGrid[nextPathPosition.x, nextPathPosition.y];
+                        int costToMoveToBlock = currentPathWithCost.cost + currentBlock.MovementCost;
+                        List<Vector2Int> extendedPath = new List<Vector2Int>(currentPathWithCost.path);
+                        accessedBlocks.Add(nextPathPosition);
+
+                        if (costToMoveToBlock > movementPoints || currentBlock.occupantEntity) // end of path. don't add block to path
                         {
+                            completedPaths.Add(currentPathWithCost.path);
+                        }
+                        else if (costToMoveToBlock == movementPoints) // end of path. add block to path
+                        {
+                            extendedPath.Add(nextPathPosition);
                             completedPaths.Add(extendedPath);
                         }
-                        else
+                        else // continue path
                         {
-                            currentPathToAdd.Add(extendedPath);
+                            extendedPath.Add(nextPathPosition);
+                            PathAndCost extendedPathWithCost = new PathAndCost(extendedPath, costToMoveToBlock);
+                            currentPathsWithCostToAdd.Add(extendedPathWithCost);
                         }
-                        accessedBlocks.Add(nextPathPosition);
                     }
                 }
             }
 
+            // remove the paths we just went through and add the new ones to continue
             for (int i = 0; i < oldPathsCount; i++)
             {
-                incompletePaths.RemoveAt(0);
+                incompletePathsWithCost.RemoveAt(0);
             }
 
-            for (int x = 0; x < currentPathToAdd.Count; x++)
+            // if there are no more paths, we've searched all possible paths
+            for (int x = 0; x < currentPathsWithCostToAdd.Count; x++)
             {
-                incompletePaths.Add(currentPathToAdd[x]);
-            }
-        }
-
-        foreach (Vector2Int vector in accessedBlocks)
-        {
-            Block currentBlock = blockGrid[vector.x, vector.y];
-            if (currentBlock.MovementCost == 1)
-            {
-                HighlightCellAvailable(currentBlock, true);
+                incompletePathsWithCost.Add(currentPathsWithCostToAdd[x]);
             }
         }
     }
