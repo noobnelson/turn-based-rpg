@@ -13,36 +13,36 @@ public class GridSelector : MonoBehaviour
     {
         playerInput = FindObjectOfType<PlayerInput>();
         cam = Camera.main;
-        // layerMask = 1 << 6;
+        //layerMask = 1 << 6;
     }
 
-    void Update()
-    {
-        Ray ray = cam.ScreenPointToRay(playerInput.MousePos);
+    // void Update()
+    // {
+    //     Ray ray = cam.ScreenPointToRay(playerInput.MousePos);
 
-        // RaycastHit hit;
-        // if (Physics.Raycast(ray.origin, ray.direction, out hit, Mathf.Infinity, layerMask))
-        // {
-        //     Block block = hit.collider.GetComponentInParent<Block>();
-        //     if (!currentHighlightedBlock)
-        //     {
-        //         currentHighlightedBlock = block;
-        //         block.HighlightCellAvailable(true);
-        //     }
-        //     else if (block != currentHighlightedBlock)
-        //     {
-        //         currentHighlightedBlock.HighlightCellAvailable(false);
-        //         block.HighlightCellAvailable(true);
-        //         currentHighlightedBlock = block;
-        //     }
-        // }
-        // else
-        // {
-        //     if (currentHighlightedBlock)
-        //     {
-        //         currentHighlightedBlock.HighlightCellAvailable(false);
-        //     }
-        //     currentHighlightedBlock = null;
-        // }
-    }
+    //     RaycastHit hit;
+    //     if (Physics.Raycast(ray.origin, ray.direction, out hit, Mathf.Infinity, layerMask))
+    //     {
+    //         Block block = hit.collider.GetComponentInParent<Block>();
+    //         if (!currentHighlightedBlock)
+    //         {
+    //             currentHighlightedBlock = block;
+    //             block.HighlightCellAvailable(true);
+    //         }
+    //         else if (block != currentHighlightedBlock)
+    //         {
+    //             currentHighlightedBlock.HighlightCellAvailable(false);
+    //             block.HighlightCellAvailable(true);
+    //             currentHighlightedBlock = block;
+    //         }
+    //     }
+    //     else
+    //     {
+    //         if (currentHighlightedBlock)
+    //         {
+    //             currentHighlightedBlock.HighlightCellAvailable(false);
+    //         }
+    //         currentHighlightedBlock = null;
+    //     }
+    // }
 }

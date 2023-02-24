@@ -7,7 +7,7 @@ public abstract class Block : MonoBehaviour
     public Entity occupantEntity;
 
     public Transform cellAvailable;
-    public Transform cellUnvailable;
+    public Transform cellHighlight;
 
     [SerializeField]
     private int movementCost;
@@ -16,6 +16,6 @@ public abstract class Block : MonoBehaviour
     void Start()
     {
         cellAvailable = transform.GetChild(0);
-        cellUnvailable = transform.GetChild(1);
+        cellHighlight = transform.GetChild(1);
     }
 }

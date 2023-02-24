@@ -144,3 +144,4 @@ MonoBehaviour:
   movementPoints: 3
   maxEnergy: 3
   attackPower: 3
+  speed: 3

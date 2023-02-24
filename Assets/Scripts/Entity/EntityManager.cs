@@ -4,24 +4,37 @@ using UnityEngine;
 
 public class EntityManager : MonoBehaviour
 {
-    public List<Entity> entities = new List<Entity>();
+    [SerializeField]
+    private List<Entity> entities = new List<Entity>();
+    private List<Entity> spawnedEntities = new List<Entity>();
     [SerializeField]
     private List<Vector2Int> entitiesStartPosition = new List<Vector2Int>();
-    public List<Vector2Int> entitiesCurrentPosition = new List<Vector2Int>();
     [SerializeField]
     private Vector3 yPositionOffset = new Vector3(0, 0.5f, 0);
+    private int whichEntityTurn = 0;
+
+    private Camera cam;
+
+    private enum GameState
+    {
+        TurnStart,
+        PlayerInput,
+        Moving,
+        TurnEnd
+    }
+    private GameState gameState;
 
     private BlockManager blockManager;
+    private PlayerInput playerInput;
 
     void Awake()
     {
         blockManager = FindObjectOfType<BlockManager>();
+        playerInput = FindObjectOfType<PlayerInput>();
     }
 
     void Start()
     {
-        entitiesCurrentPosition = entitiesStartPosition;
-
         for (int i = 0; i < entities.Count; i++)
         {
             int x = entitiesStartPosition[i].x;
@@ -30,15 +43,46 @@ public class EntityManager : MonoBehaviour
 
             Vector3 entityPosition = selectedBlock.transform.position + yPositionOffset;
             Entity entity = Instantiate(entities[i], entityPosition, Quaternion.identity);
+            entity.positionOnGrid = new Vector2Int(x, y);
+            spawnedEntities.Add(entity);
+
             blockManager.AddEntity(selectedBlock, entity);
         }
+
+        cam = Camera.main;
+        gameState = GameState.TurnStart;
     }
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        switch (gameState)
         {
-            blockManager.AvailableMoves(entitiesCurrentPosition[0], 3);
-        }
+            case GameState.TurnStart:
+                blockManager.AvailableMoves(spawnedEntities[whichEntityTurn].positionOnGrid, spawnedEntities[whichEntityTurn].currentMovementPoints);
+                blockManager.HighlightAllCells(true);
+
+                gameState = GameState.PlayerInput;
+                break;
+
+            case GameState.PlayerInput:
+                blockManager.PointerHighlight(playerInput.MousePos, cam);
+                break;
+
+            case GameState.Moving:
+                blockManager.HighlightAllCells(false);
+
+                gameState = GameState.TurnStart;
+                break;
+
+            case GameState.TurnEnd:
+                whichEntityTurn++;
+                if (whichEntityTurn == spawnedEntities.Count)
+                {
+                    whichEntityTurn = 0;
+                }
+
+                gameState = GameState.TurnStart;
+                break;
+        }   
     }
 }

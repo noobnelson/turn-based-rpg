@@ -4,24 +4,39 @@ using UnityEngine;
 
 public abstract class Entity : MonoBehaviour
 {
-    [SerializeField]
-    private int maxHealth;
-    public int CurrentHealth { get; private set; }
-    [SerializeField]
-    private int movementPoints;
-    public int CurrentMovementPoints { get; private set; }
-    [SerializeField]
-    private int maxEnergy;
-    public int CurrentEnergy { get; private set; }
-    [SerializeField]
-    private int attackPower;
-    public int CurrentAttackPower { get; private set; }
+    public int maxHealth;
+    [HideInInspector]
+    public int currentHealth;
+    public int movementPoints;
+    [HideInInspector]
+    public int currentMovementPoints;
+    public int maxEnergy;
+    [HideInInspector]
+    public int currentEnergy;
+    public int attackPower;
+    [HideInInspector]
+    public int currentAttackPower;
+    public int speed;
+    [HideInInspector]
+    public int currentSpeed;
+    [HideInInspector]
+    public Vector2Int positionOnGrid = new Vector2Int();
 
-    void Start()
+    virtual protected void Awake()
     {
-        CurrentHealth = maxHealth;
-        CurrentMovementPoints = movementPoints;
-        CurrentEnergy = maxEnergy;
-        CurrentAttackPower = attackPower;
+        currentHealth = maxHealth;
+        currentMovementPoints = movementPoints;
+        currentEnergy = maxEnergy;
+        currentAttackPower = attackPower;
+        currentSpeed = speed;
+    }
+
+    public void AssignValues()
+    {
+        currentHealth = maxHealth;
+        currentMovementPoints = movementPoints;
+        currentEnergy = maxEnergy;
+        currentAttackPower = attackPower;
+        currentSpeed = speed;
     }
 }

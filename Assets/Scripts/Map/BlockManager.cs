@@ -19,12 +19,22 @@ public class BlockManager : MonoBehaviour
     public Block[,] blockGrid;
     private List<Vector2Int> neighbourPositions = new List<Vector2Int>() { Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left };
     private List<List<Vector2Int>> completedPaths = new List<List<Vector2Int>>();
+    private List<List<Block>> blockPaths = new List<List<Block>>();
+    private List<Block> availableBlocks = new List<Block>();
+    private Block currentHighlightBlock;
+    private int blockLayerMask;
+    
 
     private EntityManager entityManager;
 
     void Awake()
     {
         entityManager = FindObjectOfType<EntityManager>();
+    }
+
+    void Start()
+    {
+        blockLayerMask = 1 << 6;
     }
 
     public void AddEntity(Block block, Entity entity)
@@ -42,14 +52,17 @@ public class BlockManager : MonoBehaviour
         block.cellAvailable.gameObject.SetActive(b);
     }
 
-    public void HighlightCellUnavailable(Block block, bool b)
+    public void HighlightCellHighlight(Block block, bool b)
     {
-        block.cellUnvailable.gameObject.SetActive(b);
+        block.cellHighlight.gameObject.SetActive(b);
     }
 
     public void AvailableMoves(Vector2Int currentPos, int movementPoints)
     {
         completedPaths.Clear();
+        blockPaths.Clear();
+        availableBlocks.Clear();
+
         int oldPathsCount = 0;
 
         List<Vector2Int> accessedBlocks = new List<Vector2Int>() { currentPos };
@@ -106,6 +119,72 @@ public class BlockManager : MonoBehaviour
             {
                 incompletePathsWithCost.Add(currentPathsWithCostToAdd[x]);
             }
+
+            foreach (List<Vector2Int> path in completedPaths)
+            {
+                List<Block> currentBlockPath = new List<Block>();
+                for (int i = 0; i < path.Count; i++)
+                {
+                    Block block = blockGrid[path[i].x, path[i].y];
+                    currentBlockPath.Add(block);
+                    availableBlocks.Add(block);
+                }
+
+                blockPaths.Add(currentBlockPath);
+            }
+        }
+    }
+
+    public void HighlightAllCells (bool b)
+    {
+        foreach (List<Block> blockPath in blockPaths)
+        {
+            foreach (Block block in blockPath)
+            {
+                HighlightCellAvailable(block, b);
+            }
+        }
+    }
+
+    public void PointerHighlight(Vector2 mousePos, Camera cam)
+    {
+        Ray ray = cam.ScreenPointToRay(mousePos);
+
+        RaycastHit hit;
+        if (Physics.Raycast(ray.origin, ray.direction, out hit, Mathf.Infinity, blockLayerMask))
+        {
+            Block block = hit.collider.GetComponentInParent<Block>();
+            if (!availableBlocks.Contains(block) && currentHighlightBlock)
+            {
+                HighlightCellAvailable(currentHighlightBlock, true);
+                HighlightCellHighlight(currentHighlightBlock, false);
+                currentHighlightBlock = null;
+            }
+            if (!availableBlocks.Contains(block) || currentHighlightBlock == block)
+            {
+                return;
+            }
+            else if (availableBlocks.Contains(block))
+            {
+                if (currentHighlightBlock)
+                {
+                    HighlightCellAvailable(currentHighlightBlock, true);
+                    HighlightCellHighlight(currentHighlightBlock, false);
+                }
+
+                currentHighlightBlock = block;
+                HighlightCellHighlight(currentHighlightBlock, true);
+                HighlightCellAvailable(currentHighlightBlock, false);
+            }
+        }
+        else
+        {
+             if (currentHighlightBlock)
+             {
+                HighlightCellAvailable(currentHighlightBlock, true);
+                HighlightCellHighlight(currentHighlightBlock, false);
+                currentHighlightBlock = null;
+             }
         }
     }
 }
