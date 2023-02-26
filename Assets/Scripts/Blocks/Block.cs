@@ -8,7 +8,8 @@ public abstract class Block : MonoBehaviour
 
     public Transform cellAvailable;
     public Transform cellHighlight;
-
+    public Vector2Int positionInGrid = new Vector2Int();
+    
     [SerializeField]
     private int movementCost;
     public int MovementCost { get{ return movementCost; } private set{ movementCost = value; } }

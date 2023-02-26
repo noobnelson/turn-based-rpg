@@ -22,6 +22,8 @@ public abstract class Entity : MonoBehaviour
     [HideInInspector]
     public Vector2Int positionOnGrid = new Vector2Int();
 
+    public bool playerControlled;
+
     virtual protected void Awake()
     {
         currentHealth = maxHealth;
@@ -31,12 +33,8 @@ public abstract class Entity : MonoBehaviour
         currentSpeed = speed;
     }
 
-    public void AssignValues()
+    public void ResetValues()
     {
-        currentHealth = maxHealth;
         currentMovementPoints = movementPoints;
-        currentEnergy = maxEnergy;
-        currentAttackPower = attackPower;
-        currentSpeed = speed;
     }
 }

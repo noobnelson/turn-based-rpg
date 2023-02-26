@@ -35,9 +35,9 @@ public class MapGenerator : MonoBehaviour
 
         // Use file to find dimensions ie. fileText array : ["000"]["000"]["000"] so 3x3 grid
         int xGridCount = fileManager.FileText[0].Length;
-        int zGridCount = fileManager.FileText.Length;
+        int yGridCount = fileManager.FileText.Length;
 
-        blockManager.blockGrid = new Block[xGridCount, zGridCount];
+        blockManager.blockGrid = new Block[xGridCount, yGridCount];
 
         CreateMap(blockManager.blockGrid, fileManager.FileText);
     }
@@ -47,21 +47,20 @@ public class MapGenerator : MonoBehaviour
         GameObject parent = new GameObject("MapParent");
 
         int xFileCount = 0;
-        int zFileCount = 0;
+        int yFileCount = 0;
 
         foreach (string line in mapText)
         {
             foreach (char c in line)
             {
-                Block newBlock = Instantiate(block[c], new Vector3(xFileCount, 0, zFileCount), Quaternion.identity);
+                Block newBlock = Instantiate(block[c], new Vector3(xFileCount, 0, yFileCount), Quaternion.identity);
                 newBlock.transform.SetParent(parent.transform);
-                newBlock.name = newBlock.name + xFileCount + zFileCount;
-                grid[xFileCount, zFileCount] = newBlock;
-
-                zFileCount++;
+                newBlock.name = newBlock.name + xFileCount + yFileCount;
+                grid[xFileCount, yFileCount] = newBlock;
+                yFileCount++;
             }
             xFileCount++;
-            zFileCount = 0;
+            yFileCount = 0;
         }
     }
 }

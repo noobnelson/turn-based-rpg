@@ -12,13 +12,14 @@ public class EntityManager : MonoBehaviour
     [SerializeField]
     private Vector3 yPositionOffset = new Vector3(0, 0.5f, 0);
     private int whichEntityTurn = 0;
-
+    private Entity currentEntityTurn;
     private Camera cam;
 
     private enum GameState
     {
         TurnStart,
         PlayerInput,
+        ComputerInput,
         Moving,
         TurnEnd
     }
@@ -51,38 +52,81 @@ public class EntityManager : MonoBehaviour
 
         cam = Camera.main;
         gameState = GameState.TurnStart;
+
+        currentEntityTurn = spawnedEntities[whichEntityTurn];
     }
 
     void Update()
     {
+        Ray ray = cam.ScreenPointToRay(playerInput.MousePos);
+
+        RaycastHit hit;
+
         switch (gameState)
         {
             case GameState.TurnStart:
-                blockManager.AvailableMoves(spawnedEntities[whichEntityTurn].positionOnGrid, spawnedEntities[whichEntityTurn].currentMovementPoints);
-                blockManager.HighlightAllCells(true);
-
+                if (currentEntityTurn.currentMovementPoints != 0)
+                {
+                    blockManager.AvailableMoves(currentEntityTurn.positionOnGrid, currentEntityTurn.currentMovementPoints);
+                    blockManager.HighlightAllCells(true);
+                }
+                
                 gameState = GameState.PlayerInput;
                 break;
 
             case GameState.PlayerInput:
-                blockManager.PointerHighlight(playerInput.MousePos, cam);
+                if (Physics.Raycast(ray.origin, ray.direction, out hit, Mathf.Infinity, blockManager.BlockLayerMask))
+                {
+                    Block hitBlock = hit.collider.GetComponentInParent<Block>();
+                    blockManager.PointerHighlight(hitBlock);
+                    if (playerInput.MouseClick && blockManager.AvailableBlocks.Contains(hitBlock))
+                    {
+                        Vector2Int blockPosition = currentEntityTurn.positionOnGrid;
+                        Block entitiyBlock = blockManager.blockGrid[blockPosition.x, blockPosition.y];
+                        blockManager.RemoveEntity(entitiyBlock);
+                        blockManager.AddEntity(hitBlock, currentEntityTurn);
+                        // search for it in blockPaths. use that list the block is in and the block's position to translate player
+                        List<Block> blockPathToFollow = blockManager.FindPathWithBlock(hitBlock);
+                        currentEntityTurn.transform.position = hitBlock.transform.position + yPositionOffset;
+                        currentEntityTurn.currentMovementPoints -= blockPathToFollow.Count;
+                        currentEntityTurn.positionOnGrid = new Vector2Int((int)hitBlock.transform.position.x, (int)hitBlock.transform.position.z);
+
+                        blockManager.RemoveHighlightBlock();
+                        gameState = GameState.Moving;
+                    }
+                }
+                else
+                {
+                    blockManager.RemoveHighlightBlock();
+                }
+
+                if (Input.GetKeyDown(KeyCode.Space))
+                {
+                    gameState = GameState.TurnEnd;
+                }
+
+                break;
+
+            case GameState.ComputerInput:
+                gameState = GameState.TurnEnd;
                 break;
 
             case GameState.Moving:
-                blockManager.HighlightAllCells(false);
-
+                blockManager.ResetPaths();
                 gameState = GameState.TurnStart;
                 break;
 
             case GameState.TurnEnd:
-                whichEntityTurn++;
+                blockManager.ResetPaths();
+                currentEntityTurn.ResetValues();
+                //whichEntityTurn++;
                 if (whichEntityTurn == spawnedEntities.Count)
                 {
                     whichEntityTurn = 0;
                 }
-
+                currentEntityTurn = spawnedEntities[whichEntityTurn];
                 gameState = GameState.TurnStart;
                 break;
-        }   
+        }
     }
 }
