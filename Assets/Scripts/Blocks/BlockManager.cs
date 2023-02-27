@@ -26,13 +26,6 @@ public class BlockManager : MonoBehaviour
     private int blockLayer = 6;
     public int BlockLayerMask { get; private set; }
 
-    private EntityManager entityManager;
-
-    void Awake()
-    {
-        entityManager = FindObjectOfType<EntityManager>();
-    }
-
     void Start()
     {
         BlockLayerMask = 1 << blockLayer;
@@ -78,8 +71,6 @@ public class BlockManager : MonoBehaviour
                     int lastPositionInPath = currentPathWithCost.path.Count - 1;
                     Vector2Int nextPathPosition = currentPathWithCost.path[lastPositionInPath] + position;
 
-                    //Debug.Log(nextPathPosition);
-
                     // check if we've visited this block position or the position is out of grid
                     if (accessedBlocks.Contains(nextPathPosition) || nextPathPosition.x < 0 || nextPathPosition.x >= blockGrid.GetLength(0) || nextPathPosition.y < 0 || nextPathPosition.y >= blockGrid.GetLength(1))
                     {
@@ -90,7 +81,6 @@ public class BlockManager : MonoBehaviour
                         }
                         continue;
                     }
-                    //Debug.Log("y");
                     Block currentBlock = blockGrid[nextPathPosition.x, nextPathPosition.y];
                     int costToMoveToBlock = currentPathWithCost.cost + currentBlock.MovementCost;
                     List<Vector2Int> extendedPath = new List<Vector2Int>(currentPathWithCost.path);

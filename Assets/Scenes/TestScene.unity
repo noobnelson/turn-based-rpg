@@ -164,7 +164,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1310674677}
   - component: {fileID: 1310674676}
-  - component: {fileID: 1310674675}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -172,18 +171,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1310674675
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1310674674}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a7572fa54595dbd4cb914919ab155758, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1310674676
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -219,8 +206,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1692766145}
-  - component: {fileID: 1692766144}
   - component: {fileID: 1692766146}
+  - component: {fileID: 1692766144}
   - component: {fileID: 1692766147}
   m_Layer: 0
   m_Name: Map Generator
@@ -295,6 +282,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1879203730}
   - component: {fileID: 1879203729}
+  - component: {fileID: 1879203732}
+  - component: {fileID: 1879203731}
   m_Layer: 0
   m_Name: EntityManager
   m_TagString: Untagged
@@ -314,13 +303,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 757b706ef0b4bd2438f0e6205ed1552d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  entities:
-  - {fileID: 4080624150858105258, guid: dc539c6d3f6f1a54bafbcaedb9bb8a27, type: 3}
-  - {fileID: 200898363679066392, guid: 32ee95f250f52ff4ea5d1cbe91ca596d, type: 3}
-  entitiesStartPosition:
-  - {x: 3, y: 3}
-  - {x: 6, y: 3}
-  yPositionOffset: {x: 0, y: 0.5, z: 0}
 --- !u!4 &1879203730
 Transform:
   m_ObjectHideFlags: 0
@@ -335,6 +317,38 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1879203731
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1879203728}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e4457f8d071c744ea1072290b75460b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1879203732
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1879203728}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4dcfabaa106f77842a870c03239b9c5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  entities:
+  - {fileID: 4080624150858105258, guid: dc539c6d3f6f1a54bafbcaedb9bb8a27, type: 3}
+  - {fileID: 200898363679066392, guid: 32ee95f250f52ff4ea5d1cbe91ca596d, type: 3}
+  spawnedEntities: []
+  entitiesStartPosition:
+  - {x: 6, y: 3}
+  - {x: 3, y: 6}
+  yPositionOffset: {x: 0, y: 0.5, z: 0}
 --- !u!1 &2023096733
 GameObject:
   m_ObjectHideFlags: 0

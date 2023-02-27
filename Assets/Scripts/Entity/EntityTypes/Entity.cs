@@ -20,9 +20,9 @@ public abstract class Entity : MonoBehaviour
     [HideInInspector]
     public int currentSpeed;
     [HideInInspector]
-    public Vector2Int positionOnGrid = new Vector2Int();
 
     public bool playerControlled;
+    public Block occupantBlock;
 
     virtual protected void Awake()
     {
