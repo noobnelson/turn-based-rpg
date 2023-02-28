@@ -20,15 +20,15 @@ public class GameState : MonoBehaviour
 
     private BlockManager blockManager;
     private PlayerInput playerInput;
-    private EntitySpawner entitySpawner;
     private EntityManager entityManager;
+    private PathFinding pathFinding;
 
     void Awake()
     {
         blockManager = FindObjectOfType<BlockManager>();
         playerInput = FindObjectOfType<PlayerInput>();
         entityManager = FindObjectOfType<EntityManager>();
-        entitySpawner = FindObjectOfType<EntitySpawner>();
+        pathFinding = FindObjectOfType<PathFinding>();
     }
 
     void Start()
@@ -36,7 +36,7 @@ public class GameState : MonoBehaviour
         cam = Camera.main;
         gameState = CurrentGameState.TurnStart;
 
-        currentEntityTurn = entitySpawner.spawnedEntities[whichEntityTurn];
+        currentEntityTurn = entityManager.currentEntities[whichEntityTurn];
     }
 
     void Update()
@@ -51,7 +51,7 @@ public class GameState : MonoBehaviour
                 if (currentEntityTurn.currentMovementPoints != 0)
                 {
                     Block currentBlock = entityManager.GetBlockBelowEntity(currentEntityTurn);
-                    blockManager.AvailableMoves(currentBlock, currentEntityTurn.currentMovementPoints);
+                    pathFinding.AvailableMoves(currentBlock, currentEntityTurn.currentMovementPoints);
                     blockManager.HighlightAllCells(true);
                 }
 
@@ -67,11 +67,12 @@ public class GameState : MonoBehaviour
                     {
                         List<Block> blockPathToFollow = blockManager.FindPathWithBlock(hitBlock);
                         Block occupiedBlock = entityManager.GetBlockBelowEntity(currentEntityTurn);
-                        entityManager.MoveEntity(hitBlock, currentEntityTurn, blockPathToFollow);
+                        entityManager.MoveEntity(currentEntityTurn, hitBlock, blockPathToFollow);
  
                         blockManager.RemoveHighlightBlock();
-                        blockManager.BlockCostUpdate(hitBlock, 99);
+                        blockManager.BlockCostMax(hitBlock);
                         blockManager.BlockCostReset(occupiedBlock);
+
                         gameState = CurrentGameState.Moving;
                     }
                 }
@@ -100,11 +101,11 @@ public class GameState : MonoBehaviour
                 blockManager.ResetPaths();
                 currentEntityTurn.ResetValues();
                 //whichEntityTurn++;
-                if (whichEntityTurn == entitySpawner.spawnedEntities.Count)
+                if (whichEntityTurn == entityManager.currentEntities.Count)
                 {
                     whichEntityTurn = 0;
                 }
-                currentEntityTurn = entitySpawner.spawnedEntities[whichEntityTurn];
+                currentEntityTurn = entityManager.currentEntities[whichEntityTurn];
                 gameState = CurrentGameState.TurnStart;
                 break;
         }

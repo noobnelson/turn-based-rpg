@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class EntityManager : MonoBehaviour
 {
-    public void MoveEntity(Block newBlock, Entity entity, List<Block> path)
+    [HideInInspector]
+    public List<Entity> currentEntities = new List<Entity>();
+
+    public void MoveEntity(Entity entity, Block newBlock, List<Block> path)
     {
         Vector3 newBlockPosition = newBlock.transform.position;
         entity.transform.position = new Vector3(newBlockPosition.x, entity.transform.position.y, newBlockPosition.z);
         entity.currentMovementPoints -= path.Count;
-        
     }
 
     public Block GetBlockBelowEntity(Entity entity)

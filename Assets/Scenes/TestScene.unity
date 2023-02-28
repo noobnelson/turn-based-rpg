@@ -209,8 +209,9 @@ GameObject:
   - component: {fileID: 1692766146}
   - component: {fileID: 1692766144}
   - component: {fileID: 1692766147}
+  - component: {fileID: 1692766148}
   m_Layer: 0
-  m_Name: Map Generator
+  m_Name: Block Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -272,6 +273,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapFile: {fileID: 4900000, guid: ceda91bacc7d8064a90be522cc4fb44b, type: 3}
+--- !u!114 &1692766148
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1692766143}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c76d81fb8cff8143b1ec04b4dec4d99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1879203728
 GameObject:
   m_ObjectHideFlags: 0
@@ -285,7 +298,7 @@ GameObject:
   - component: {fileID: 1879203732}
   - component: {fileID: 1879203731}
   m_Layer: 0
-  m_Name: EntityManager
+  m_Name: Entity Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -303,6 +316,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 757b706ef0b4bd2438f0e6205ed1552d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentEntities: []
 --- !u!4 &1879203730
 Transform:
   m_ObjectHideFlags: 0
@@ -344,11 +358,10 @@ MonoBehaviour:
   entities:
   - {fileID: 4080624150858105258, guid: dc539c6d3f6f1a54bafbcaedb9bb8a27, type: 3}
   - {fileID: 200898363679066392, guid: 32ee95f250f52ff4ea5d1cbe91ca596d, type: 3}
-  spawnedEntities: []
   entitiesStartPosition:
   - {x: 6, y: 3}
   - {x: 3, y: 6}
-  yPositionOffset: {x: 0, y: 0.5, z: 0}
+  yPositionOffset: {x: 0, y: 0.51, z: 0}
 --- !u!1 &2023096733
 GameObject:
   m_ObjectHideFlags: 0

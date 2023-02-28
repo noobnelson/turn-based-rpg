@@ -5,7 +5,7 @@ using UnityEditor;
 using System.IO;
 using System;
 
-public class MapGenerator : MonoBehaviour
+public class BlockSpawner : MonoBehaviour
 {
     // Since Unity doesn't show dictionaries in Inspector, create own Key,Value
     // KEY
