@@ -28,9 +28,8 @@ public class EntitySpawner : MonoBehaviour
             Block selectedBlock = blockManager.blockGrid[x, y];
             Vector3 entityPosition = selectedBlock.transform.position + yPositionOffset;
             Entity entity = Instantiate(entities[i], entityPosition, Quaternion.identity);
-            entity.occupantBlock = selectedBlock;
+            blockManager.BlockCostUpdate(selectedBlock, 99);
             spawnedEntities.Add(entity);
-            blockManager.AddEntity(selectedBlock, entity);
         }
     }
 }

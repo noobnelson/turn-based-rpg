@@ -4,6 +4,14 @@ using UnityEngine;
 
 public class BlockManager : MonoBehaviour
 {
+    public Block[,] blockGrid;
+    public List<Block> AvailableBlocks { get; private set; } = new List<Block>();
+
+    // pathfinding
+    private List<Vector2Int> neighbourPositions = new List<Vector2Int>() { Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left };
+    private List<List<Vector2Int>> completedPaths = new List<List<Vector2Int>>();
+    public List<List<Block>> BlockPaths { get; private set; } = new List<List<Block>>();
+
     public struct PathAndCost
     {
         public List<Vector2Int> path;
@@ -16,11 +24,6 @@ public class BlockManager : MonoBehaviour
         }
     }
 
-    public Block[,] blockGrid;
-    private List<Vector2Int> neighbourPositions = new List<Vector2Int>() { Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left };
-    private List<List<Vector2Int>> completedPaths = new List<List<Vector2Int>>();
-    public List<List<Block>> BlockPaths { get; private set; } = new List<List<Block>>();
-    public List<Block> AvailableBlocks { get; private set; } = new List<Block>();
     private Block currentHighlightBlock;
     [SerializeField]
     private int blockLayer = 6;
@@ -31,14 +34,14 @@ public class BlockManager : MonoBehaviour
         BlockLayerMask = 1 << blockLayer;
     }
 
-    public void AddEntity(Block block, Entity entity)
+    public void BlockCostUpdate(Block block, int value)
     {
-        block.occupantEntity = entity;
+        block.currentMovementCost = value;
     }
 
-    public void RemoveEntity(Block block)
+    public void BlockCostReset(Block block)
     {
-        block.occupantEntity = null;
+        block.currentMovementCost = block.MovementCost;
     }
 
     public void HighlightCellAvailable(Block block, bool b)
@@ -51,9 +54,10 @@ public class BlockManager : MonoBehaviour
         block.cellHighlight.gameObject.SetActive(b);
     }
 
-    public void AvailableMoves(Vector2Int currentPos, int movementPoints)
+    public void AvailableMoves(Block selectedBlock, int movementPoints)
     {
         int oldPathsCount = 0;
+        Vector2Int currentPos = selectedBlock.positionOnGrid;
 
         List<Vector2Int> accessedBlocks = new List<Vector2Int>() { currentPos };
         PathAndCost initialPathAndCost = new PathAndCost(new List<Vector2Int>() { currentPos }, 0); // start position 
@@ -82,11 +86,11 @@ public class BlockManager : MonoBehaviour
                         continue;
                     }
                     Block currentBlock = blockGrid[nextPathPosition.x, nextPathPosition.y];
-                    int costToMoveToBlock = currentPathWithCost.cost + currentBlock.MovementCost;
+                    int costToMoveToBlock = currentPathWithCost.cost + currentBlock.currentMovementCost;
                     List<Vector2Int> extendedPath = new List<Vector2Int>(currentPathWithCost.path);
                     accessedBlocks.Add(nextPathPosition);
 
-                    if (costToMoveToBlock > movementPoints || currentBlock.occupantEntity || accessedBlockCount == 4) // end of path. don't add block to path
+                    if (costToMoveToBlock > movementPoints || accessedBlockCount == 4) // end of path. don't add block to path
                     {
                         completedPaths.Add(currentPathWithCost.path);
                     }

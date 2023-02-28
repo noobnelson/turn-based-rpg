@@ -22,7 +22,6 @@ public abstract class Entity : MonoBehaviour
     [HideInInspector]
 
     public bool playerControlled;
-    public Block occupantBlock;
 
     virtual protected void Awake()
     {

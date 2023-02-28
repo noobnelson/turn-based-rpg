@@ -4,10 +4,6 @@ using UnityEngine;
 
 public class GameState : MonoBehaviour
 {
-    private int whichEntityTurn = 0;
-    private Entity currentEntityTurn;
-    private Camera cam;
-
     private enum CurrentGameState
     {
         TurnStart,
@@ -17,6 +13,10 @@ public class GameState : MonoBehaviour
         TurnEnd
     }
     private CurrentGameState gameState;
+
+    private int whichEntityTurn = 0;
+    private Entity currentEntityTurn;
+    private Camera cam;
 
     private BlockManager blockManager;
     private PlayerInput playerInput;
@@ -37,7 +37,6 @@ public class GameState : MonoBehaviour
         gameState = CurrentGameState.TurnStart;
 
         currentEntityTurn = entitySpawner.spawnedEntities[whichEntityTurn];
-        Debug.Log(currentEntityTurn);
     }
 
     void Update()
@@ -51,7 +50,8 @@ public class GameState : MonoBehaviour
             case CurrentGameState.TurnStart:
                 if (currentEntityTurn.currentMovementPoints != 0)
                 {
-                    blockManager.AvailableMoves(currentEntityTurn.occupantBlock.positionOnGrid, currentEntityTurn.currentMovementPoints);
+                    Block currentBlock = entityManager.GetBlockBelowEntity(currentEntityTurn);
+                    blockManager.AvailableMoves(currentBlock, currentEntityTurn.currentMovementPoints);
                     blockManager.HighlightAllCells(true);
                 }
 
@@ -65,13 +65,13 @@ public class GameState : MonoBehaviour
                     blockManager.PointerHighlight(hitBlock);
                     if (playerInput.MouseClick && blockManager.AvailableBlocks.Contains(hitBlock))
                     {
-                        blockManager.RemoveEntity(currentEntityTurn.occupantBlock);
-                        blockManager.AddEntity(hitBlock, currentEntityTurn);
-                        // search for it in blockPaths. use that list the block is in and the block's position to translate player
                         List<Block> blockPathToFollow = blockManager.FindPathWithBlock(hitBlock);
-                        entityManager.MoveEntity(currentEntityTurn.occupantBlock, hitBlock, currentEntityTurn, blockPathToFollow);
-
+                        Block occupiedBlock = entityManager.GetBlockBelowEntity(currentEntityTurn);
+                        entityManager.MoveEntity(hitBlock, currentEntityTurn, blockPathToFollow);
+ 
                         blockManager.RemoveHighlightBlock();
+                        blockManager.BlockCostUpdate(hitBlock, 99);
+                        blockManager.BlockCostReset(occupiedBlock);
                         gameState = CurrentGameState.Moving;
                     }
                 }
