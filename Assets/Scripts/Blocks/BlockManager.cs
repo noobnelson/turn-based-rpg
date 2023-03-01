@@ -109,7 +109,6 @@ public class BlockManager : MonoBehaviour
     {
         HighlightAllCells(false);
         RemoveHighlightBlock();
-        pathFinding.completedPaths.Clear();
         pathFinding.BlockPaths.Clear();
         AvailableBlocks.Clear();
     }
