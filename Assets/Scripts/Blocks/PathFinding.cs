@@ -17,26 +17,19 @@ public class PathFinding : MonoBehaviour
     }
 
     private List<Vector2Int> neighbourPositions = new List<Vector2Int>() { Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left };
-    public List<List<Block>> BlockPaths { get; private set; } = new List<List<Block>>();
+    public List<List<Block>> CurrentBlockPaths { get; private set; } = new List<List<Block>>();
 
-    private BlockManager blockManager;
-
-    void Awake()
+    public List<Block> AvailableMoves(Block startBlock, int movementPoints, Block[,] blockGrid)
     {
-        blockManager = FindObjectOfType<BlockManager>();
-    }
+        CurrentBlockPaths.Clear();
 
-    public void AvailableMoves(Block startBlock, int movementPoints)
-    {
-        int oldPathsCount = 0;
-
+        List<Block> availableBlocks = new List<Block>();
         List<Block> accessedBlocks = new List<Block>() { startBlock };
         List<PathAndCost> incompletePathsWithCost = new List<PathAndCost>() { new PathAndCost(new List<Block>() { startBlock }, 0) };
 
         while (incompletePathsWithCost.Count > 0)
         {
-            oldPathsCount = incompletePathsWithCost.Count;
-            List<PathAndCost> currentPathsWithCostToAdd = new List<PathAndCost>();
+            List<PathAndCost> newPathsWithCostToAdd = new List<PathAndCost>();
 
             foreach (PathAndCost pathWithCost in incompletePathsWithCost) // go through each unfinished path
             {
@@ -46,55 +39,50 @@ public class PathFinding : MonoBehaviour
                 {
                     Vector2Int nextPathPosition = pathWithCost.blockPath[lastPositionInPath].positionOnGrid + position;
 
-                    // check if we've visited this block position or the position is out of grid
-                    if (nextPathPosition.x < 0 || nextPathPosition.x >= blockManager.blockGrid.GetLength(0)
-                        || nextPathPosition.y < 0 || nextPathPosition.y >= blockManager.blockGrid.GetLength(1))
+                    // check if the position is out of grid
+                    if (nextPathPosition.x < 0 || nextPathPosition.x >= blockGrid.GetLength(0)
+                        || nextPathPosition.y < 0 || nextPathPosition.y >= blockGrid.GetLength(1))
                     {
                         continue;
                     }
 
-                    Block nextBlock = blockManager.blockGrid[nextPathPosition.x, nextPathPosition.y];
+                    Block nextBlock = blockGrid[nextPathPosition.x, nextPathPosition.y];
 
+                    // check if accessed block already
                     if (accessedBlocks.Contains(nextBlock))
                     {
                         continue;
                     }
 
                     int costToMoveToBlock = pathWithCost.cost + nextBlock.currentMovementCost;
-                    List<Block> extendedPath = new List<Block>(pathWithCost.blockPath);
+                    List<Block> newPath = new List<Block>(pathWithCost.blockPath);
                     accessedBlocks.Add(nextBlock);
 
-                    if (costToMoveToBlock > movementPoints) // end of path. don't add block to path
+                    if (costToMoveToBlock > movementPoints) // end of path. don't add block to path and remove starting block
                     {
-                        BlockPaths.Add(pathWithCost.blockPath);
+                        CurrentBlockPaths.Add(newPath.GetRange(1, newPath.Count - 1));
                     }
-                    else if (costToMoveToBlock == movementPoints) // end of path. add block to path
+                    else if (costToMoveToBlock == movementPoints) // end of path. add block to path and remove starting block
                     {
-                        extendedPath.Add(nextBlock);
-                        blockManager.AvailableBlocks.Add(nextBlock);
-                        BlockPaths.Add(extendedPath);
+                        newPath.Add(nextBlock);
+                        CurrentBlockPaths.Add(newPath.GetRange(1, newPath.Count - 1));
+                        
+                        availableBlocks.Add(nextBlock);
                     }
                     else // continue path
                     {
-                        extendedPath.Add(nextBlock);
-                        blockManager.AvailableBlocks.Add(nextBlock);
-                        PathAndCost extendedPathWithCost = new PathAndCost(extendedPath, costToMoveToBlock);
-                        currentPathsWithCostToAdd.Add(extendedPathWithCost);
+                        newPath.Add(nextBlock);
+                        PathAndCost newPathWithCost = new PathAndCost(newPath, costToMoveToBlock);
+                        newPathsWithCostToAdd.Add(newPathWithCost);
+
+                        availableBlocks.Add(nextBlock);
                     }
                 }
             }
 
-            // remove the paths we just went through and add the new ones to continue
-            for (int i = 0; i < oldPathsCount; i++)
-            {
-                incompletePathsWithCost.RemoveAt(0);
-            }
-
-            // if there are no more paths, we've searched all possible paths
-            for (int x = 0; x < currentPathsWithCostToAdd.Count; x++)
-            {
-                incompletePathsWithCost.Add(currentPathsWithCostToAdd[x]);
-            }
+            incompletePathsWithCost = newPathsWithCostToAdd;
         }
+
+        return availableBlocks;
     }
 }

@@ -7,21 +7,29 @@ public class EntityManager : MonoBehaviour
     [HideInInspector]
     public List<Entity> currentEntities = new List<Entity>();
 
-    public void MoveEntity(Entity entity, Block newBlock, List<Block> path)
+    private GameState gameState;
+    private EntityMove entityMove;
+    private EntityAttack entityAttack;
+
+    void Awake()
     {
-        Vector3 newBlockPosition = newBlock.transform.position;
-        entity.transform.position = new Vector3(newBlockPosition.x, entity.transform.position.y, newBlockPosition.z);
-        entity.currentMovementPoints -= path.Count;
+        gameState = FindObjectOfType<GameState>();
+        entityMove = FindObjectOfType<EntityMove>();
     }
 
-    public Block GetBlockBelowEntity(Entity entity)
+    public void MoveEntity(Entity entity, Block newBlock, List<Block> path)
+    {
+        StartCoroutine(entityMove.MoveEntity(entity, newBlock, path));
+    }
+
+    public Entity GetEntityAboveBlock(Block block)
     {
         RaycastHit hit;
-        Block block = null;
+        Entity entity = null;
         if (Physics.Raycast(entity.transform.position, Vector3.down, out hit, Mathf.Infinity))
         {
-            block = hit.collider.GetComponentInParent<Block>();
+            entity = hit.collider.GetComponentInParent<Entity>();
         }
-        return block;
+        return entity;
     }
 }

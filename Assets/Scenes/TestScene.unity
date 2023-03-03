@@ -317,6 +317,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentEntities: []
+  distanceToMove: 0.05
+  movementSpeed: 1
 --- !u!4 &1879203730
 Transform:
   m_ObjectHideFlags: 0
@@ -343,6 +345,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e4457f8d071c744ea1072290b75460b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  moving: 0
 --- !u!114 &1879203732
 MonoBehaviour:
   m_ObjectHideFlags: 0

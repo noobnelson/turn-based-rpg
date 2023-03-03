@@ -11,6 +11,7 @@ public class BlockManager : MonoBehaviour
     [SerializeField]
     private int blockLayer = 6;
     public int BlockLayerMask { get; private set; }
+    private int maxCost = 99;
 
     private PathFinding pathFinding;
 
@@ -23,7 +24,7 @@ public class BlockManager : MonoBehaviour
 
     public void BlockCostMax(Block block)
     {
-        block.currentMovementCost = 99;
+        block.currentMovementCost = maxCost;
     }
 
     public void BlockCostReset(Block block)
@@ -40,8 +41,6 @@ public class BlockManager : MonoBehaviour
     {
         block.cellHighlight.gameObject.SetActive(b);
     }
-
-
 
     public void HighlightAllCells(bool b)
     {
@@ -92,7 +91,7 @@ public class BlockManager : MonoBehaviour
     {
         List<Block> pathWithBlock = new List<Block>();
         int blockPositionInList;
-        foreach (List<Block> blockList in pathFinding.BlockPaths)
+        foreach (List<Block> blockList in pathFinding.CurrentBlockPaths)
         {
             if (blockList.Contains(block))
             {
@@ -105,11 +104,26 @@ public class BlockManager : MonoBehaviour
         return pathWithBlock;
     }
 
+    public void FindAvailableMoves(Block startBlock, int movementPoints)
+    {
+        AvailableBlocks = pathFinding.AvailableMoves(startBlock, movementPoints, blockGrid);
+    }
+    
+    public Block GetBlockBelowEntity(Entity entity)
+    {
+        RaycastHit hit;
+        Block block = null;
+        if (Physics.Raycast(entity.transform.position, Vector3.down, out hit, Mathf.Infinity))
+        {
+            block = hit.collider.GetComponentInParent<Block>();
+        }
+        return block;
+    }
+
     public void ResetPaths()
     {
         HighlightAllCells(false);
         RemoveHighlightBlock();
-        pathFinding.BlockPaths.Clear();
         AvailableBlocks.Clear();
     }
 }
