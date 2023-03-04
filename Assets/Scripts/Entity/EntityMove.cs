@@ -5,7 +5,7 @@ using UnityEngine;
 public class EntityMove : MonoBehaviour
 {
     [SerializeField]
-    private float distanceToMove = 0.1f;
+    private float minDistanceToTarget = 0.1f;
     [SerializeField]
     private float movementSpeed = 1f;
     
@@ -22,11 +22,14 @@ public class EntityMove : MonoBehaviour
         entity.currentMovementPoints -= path.Count;
         foreach (Block block in path)
         {
-            Vector3 targetPosition = new Vector3(block.transform.position.x, entity.transform.position.y, block.transform.position.z);
+            Vector3 targetPosition = 
+                new Vector3(block.transform.position.x, entity.transform.position.y, block.transform.position.z);
             Vector3 direction = targetPosition - entity.transform.position;
-            while (Mathf.Abs(Vector3.Distance(entity.transform.position, targetPosition)) > distanceToMove)
+            float distanceToTarget = Mathf.Abs(Vector3.Distance(entity.transform.position, targetPosition));
+            while (distanceToTarget > minDistanceToTarget)
             {
                 entity.transform.Translate(direction.normalized * Time.deltaTime * movementSpeed);
+                distanceToTarget = Mathf.Abs(Vector3.Distance(entity.transform.position, targetPosition));
                 yield return null;
             }
             entity.transform.position = targetPosition;

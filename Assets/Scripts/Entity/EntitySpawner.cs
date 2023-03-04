@@ -26,7 +26,7 @@ public class EntitySpawner : MonoBehaviour
         {
             int x = entitiesStartPosition[i].x;
             int y = entitiesStartPosition[i].y;
-            Block selectedBlock = blockManager.blockGrid[x, y];
+            Block selectedBlock = blockManager.BlockGrid[x, y];
             Vector3 entityPosition = selectedBlock.transform.position + yPositionOffset;
             Entity entity = Instantiate(entities[i], entityPosition, Quaternion.identity);
             blockManager.BlockCostMax(selectedBlock);

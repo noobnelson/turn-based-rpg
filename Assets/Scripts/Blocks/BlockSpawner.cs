@@ -33,13 +33,7 @@ public class BlockSpawner : MonoBehaviour
             block.Add(charForBlockTypes[i], blockTypes[i]);
         }
 
-        // Use file to find dimensions ie. fileText array : ["000"]["000"]["000"] so 3x3 grid
-        int xGridCount = fileManager.FileText[0].Length;
-        int yGridCount = fileManager.FileText.Length;
-
-        blockManager.blockGrid = new Block[xGridCount, yGridCount];
-
-        CreateMap(blockManager.blockGrid, fileManager.FileText);
+        CreateMap(blockManager.BlockGrid, fileManager.FileText);
     }
 
     public void CreateMap(Block[,] grid, string[] mapText)

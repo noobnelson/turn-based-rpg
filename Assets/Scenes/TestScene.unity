@@ -297,6 +297,8 @@ GameObject:
   - component: {fileID: 1879203729}
   - component: {fileID: 1879203732}
   - component: {fileID: 1879203731}
+  - component: {fileID: 1879203734}
+  - component: {fileID: 1879203733}
   m_Layer: 0
   m_Name: Entity Manager
   m_TagString: Untagged
@@ -317,8 +319,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentEntities: []
-  distanceToMove: 0.05
-  movementSpeed: 1
 --- !u!4 &1879203730
 Transform:
   m_ObjectHideFlags: 0
@@ -365,6 +365,32 @@ MonoBehaviour:
   - {x: 6, y: 3}
   - {x: 3, y: 6}
   yPositionOffset: {x: 0, y: 0.51, z: 0}
+--- !u!114 &1879203733
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1879203728}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 652522a3f07651e41a48bbcbdafa9b32, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1879203734
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1879203728}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6167c6d5cffba3f46b2bb6634f9eface, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  distanceToMove: 0.1
+  movementSpeed: 1
 --- !u!1 &2023096733
 GameObject:
   m_ObjectHideFlags: 0

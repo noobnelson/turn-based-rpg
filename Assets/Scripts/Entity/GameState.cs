@@ -17,10 +17,11 @@ public class GameState : MonoBehaviour
 
     private int whichEntityTurn = 0;
     private Entity currentEntityTurn;
-    private Camera cam;
     [HideInInspector]
     public bool moving;
+    private Block currentEntityBlock;
 
+    private Camera cam;
     private BlockManager blockManager;
     private PlayerInput playerInput;
     private EntityManager entityManager;
@@ -49,10 +50,10 @@ public class GameState : MonoBehaviour
         switch (gameState)
         {
             case CurrentGameState.TurnStart:
+                currentEntityBlock = blockManager.BlockBelowEntity(currentEntityTurn);
                 if (currentEntityTurn.currentMovementPoints != 0)
                 {
-                    Block currentBlock = blockManager.GetBlockBelowEntity(currentEntityTurn);
-                    blockManager.FindAvailableMoves(currentBlock, currentEntityTurn.currentMovementPoints);
+                    blockManager.FindAvailableMoves(currentEntityBlock, currentEntityTurn.currentMovementPoints);
                     blockManager.HighlightAllCells(true);
                 }
 
@@ -75,11 +76,9 @@ public class GameState : MonoBehaviour
                     if (playerInput.MouseClick && blockManager.AvailableBlocks.Contains(hitBlock))
                     {
                         List<Block> blockPathToFollow = blockManager.FindPathWithBlock(hitBlock);
-                        Block entityBlock = blockManager.GetBlockBelowEntity(currentEntityTurn);
                         blockManager.RemoveHighlightBlock();
                         blockManager.BlockCostMax(hitBlock);
-                        blockManager.BlockCostReset(entityBlock);
-
+                        blockManager.BlockCostReset(currentEntityBlock);
                         entityManager.MoveEntity(currentEntityTurn, hitBlock, blockPathToFollow);
                         blockManager.ResetPaths();
                         gameState = CurrentGameState.Moving;
@@ -115,7 +114,8 @@ public class GameState : MonoBehaviour
             case CurrentGameState.TurnEnd:
                 blockManager.ResetPaths();
                 currentEntityTurn.ResetValues();
-                whichEntityTurn++;
+
+                //whichEntityTurn++;
                 if (whichEntityTurn == entityManager.currentEntities.Count)
                 {
                     whichEntityTurn = 0;

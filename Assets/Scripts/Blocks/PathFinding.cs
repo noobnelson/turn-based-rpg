@@ -16,16 +16,17 @@ public class PathFinding : MonoBehaviour
         }
     }
 
-    private List<Vector2Int> neighbourPositions = new List<Vector2Int>() { Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left };
+    private List<Vector2Int> neighbourPositions = 
+        new List<Vector2Int>() { Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left };
     public List<List<Block>> CurrentBlockPaths { get; private set; } = new List<List<Block>>();
 
     public List<Block> AvailableMoves(Block startBlock, int movementPoints, Block[,] blockGrid)
     {
         CurrentBlockPaths.Clear();
-
         List<Block> availableBlocks = new List<Block>();
         List<Block> accessedBlocks = new List<Block>() { startBlock };
-        List<PathAndCost> incompletePathsWithCost = new List<PathAndCost>() { new PathAndCost(new List<Block>() { startBlock }, 0) };
+        List<PathAndCost> incompletePathsWithCost = 
+            new List<PathAndCost>() { new PathAndCost(new List<Block>() { startBlock }, 0) };
 
         while (incompletePathsWithCost.Count > 0)
         {
@@ -37,7 +38,9 @@ public class PathFinding : MonoBehaviour
 
                 foreach (Vector2Int position in neighbourPositions) // check the 4 surroundings 
                 {
-                    Vector2Int nextPathPosition = pathWithCost.blockPath[lastPositionInPath].positionOnGrid + position;
+                    Vector2Int lastBlockPosition = pathWithCost.blockPath[lastPositionInPath].positionOnGrid;
+                    
+                    Vector2Int nextPathPosition = lastBlockPosition + position;
 
                     // check if the position is out of grid
                     if (nextPathPosition.x < 0 || nextPathPosition.x >= blockGrid.GetLength(0)

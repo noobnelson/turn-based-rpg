@@ -7,13 +7,10 @@ public class EntityManager : MonoBehaviour
     [HideInInspector]
     public List<Entity> currentEntities = new List<Entity>();
 
-    private GameState gameState;
     private EntityMove entityMove;
-    private EntityAttack entityAttack;
 
     void Awake()
     {
-        gameState = FindObjectOfType<GameState>();
         entityMove = FindObjectOfType<EntityMove>();
     }
 
@@ -22,7 +19,7 @@ public class EntityManager : MonoBehaviour
         StartCoroutine(entityMove.MoveEntity(entity, newBlock, path));
     }
 
-    public Entity GetEntityAboveBlock(Block block)
+    public Entity EntityAboveBlock(Block block)
     {
         RaycastHit hit;
         Entity entity = null;

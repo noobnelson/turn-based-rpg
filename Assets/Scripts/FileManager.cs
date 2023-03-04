@@ -8,12 +8,11 @@ public class FileManager : MonoBehaviour
 {
     [SerializeField]
     private TextAsset mapFile;
-    private string mapFilePath;
     public string[] FileText { get; private set; }
 
     void Awake()
     {
-        mapFilePath = AssetDatabase.GetAssetPath(mapFile);
+        string mapFilePath = AssetDatabase.GetAssetPath(mapFile);
         FileText = File.ReadAllLines(mapFilePath);
     }
 }

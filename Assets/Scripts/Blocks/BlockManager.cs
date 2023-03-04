@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BlockManager : MonoBehaviour
 {
-    public Block[,] blockGrid;
+    public Block[,] BlockGrid { get; private set; }
     public List<Block> AvailableBlocks { get; private set; } = new List<Block>();
 
     private Block currentHighlightBlock;
@@ -14,12 +14,23 @@ public class BlockManager : MonoBehaviour
     private int maxCost = 99;
 
     private PathFinding pathFinding;
+    private FileManager fileManager;
 
     void Awake()
     {
         pathFinding = FindObjectOfType<PathFinding>();
+        fileManager = FindObjectOfType<FileManager>();
 
         BlockLayerMask = 1 << blockLayer;
+    }
+
+    void Start()
+    {
+        // Use file to find dimensions ie. fileText array : ["000"]["000"]["000"] so 3x3 grid
+        int xGridCount = fileManager.FileText[0].Length;
+        int yGridCount = fileManager.FileText.Length;
+
+        BlockGrid = new Block[xGridCount, yGridCount];
     }
 
     public void BlockCostMax(Block block)
@@ -106,10 +117,10 @@ public class BlockManager : MonoBehaviour
 
     public void FindAvailableMoves(Block startBlock, int movementPoints)
     {
-        AvailableBlocks = pathFinding.AvailableMoves(startBlock, movementPoints, blockGrid);
+        AvailableBlocks = pathFinding.AvailableMoves(startBlock, movementPoints, BlockGrid);
     }
-    
-    public Block GetBlockBelowEntity(Entity entity)
+
+    public Block BlockBelowEntity(Entity entity)
     {
         RaycastHit hit;
         Block block = null;
