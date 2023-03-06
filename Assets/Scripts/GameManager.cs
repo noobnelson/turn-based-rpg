@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameState : MonoBehaviour
+public class GameManager : MonoBehaviour
 {
     private enum CurrentGameState
     {
@@ -28,6 +28,7 @@ public class GameState : MonoBehaviour
 
     void Awake()
     {
+        cam = Camera.main;
         blockManager = FindObjectOfType<BlockManager>();
         playerInput = FindObjectOfType<PlayerInput>();
         entityManager = FindObjectOfType<EntityManager>();
@@ -35,7 +36,6 @@ public class GameState : MonoBehaviour
 
     void Start()
     {
-        cam = Camera.main;
         gameState = CurrentGameState.TurnStart;
 
         currentEntityTurn = entityManager.currentEntities[whichEntityTurn];
@@ -44,7 +44,6 @@ public class GameState : MonoBehaviour
     void Update()
     {
         Ray ray = cam.ScreenPointToRay(playerInput.MousePos);
-
         RaycastHit hit;
 
         switch (gameState)
@@ -98,6 +97,7 @@ public class GameState : MonoBehaviour
 
             case CurrentGameState.ComputerInput:
                 gameState = CurrentGameState.TurnEnd;
+
                 break;
 
             case CurrentGameState.Moving:
@@ -105,10 +105,12 @@ public class GameState : MonoBehaviour
                 {
                     gameState = CurrentGameState.TurnStart;
                 }
+
                 break;
 
             case CurrentGameState.Attacking:
                 gameState = CurrentGameState.TurnStart;
+
                 break;
 
             case CurrentGameState.TurnEnd:
@@ -122,6 +124,7 @@ public class GameState : MonoBehaviour
                 }
                 currentEntityTurn = entityManager.currentEntities[whichEntityTurn];
                 gameState = CurrentGameState.TurnStart;
+                
                 break;
         }
     }

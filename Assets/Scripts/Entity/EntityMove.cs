@@ -9,11 +9,11 @@ public class EntityMove : MonoBehaviour
     [SerializeField]
     private float movementSpeed = 1f;
     
-    private GameState gameState;
+    private GameManager gameState;
 
     void Awake()
     {
-        gameState = FindObjectOfType<GameState>();
+        gameState = FindObjectOfType<GameManager>();
     }
 
     public IEnumerator MoveEntity(Entity entity, Block newBlock, List<Block> path)
