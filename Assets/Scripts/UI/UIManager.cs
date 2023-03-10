@@ -5,19 +5,36 @@ using UnityEngine;
 public class UIManager : MonoBehaviour
 {
     private PlayerInput playerInput;
-    private UIMenus menus;
+    private UIMenus uiMenus;
+    private UIGameplay uiGameplay;
 
     void Awake()
     {
         playerInput = FindObjectOfType<PlayerInput>();
-        menus = FindObjectOfType<UIMenus>();
+        uiMenus = FindObjectOfType<UIMenus>();
+        uiGameplay = FindObjectOfType<UIGameplay>();
     }
 
     void Update()
     {
         if (playerInput.PauseKey)
         {
-            menus.PauseMenu();
+            uiMenus.PauseMenu();
         }
+    }
+
+    public void UpdateInfoPanelPlayer(Entity entity)
+    {
+        uiGameplay.UpdateInfoPanelPlayer(entity);
+    }
+
+    public void UpdateInfoPanelOther(Entity entity)
+    {
+        uiGameplay.UpdateInfoPanelOther(entity);
+    }
+
+    public void ToggleInfoPanelOther(bool b)
+    {
+        uiGameplay.ToggleInfoPanelOther(b);
     }
 }

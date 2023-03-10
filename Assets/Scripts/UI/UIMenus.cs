@@ -11,7 +11,7 @@ public class UIMenus : MonoBehaviour
     {
         if (pauseMenu.gameObject.activeInHierarchy)
         {
-            ResumeButton();
+            ButtonResume();
         }
         else
         {
@@ -20,7 +20,7 @@ public class UIMenus : MonoBehaviour
         }
     }
 
-    public void ResumeButton()
+    public void ButtonResume()
     {
         pauseMenu.gameObject.SetActive(false);
         Time.timeScale = 1f;

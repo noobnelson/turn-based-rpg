@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    private enum CurrentGameState
+    public enum CurrentGameState
     {
         TurnStart,
         PlayerInput,
@@ -13,7 +13,8 @@ public class GameManager : MonoBehaviour
         Attacking,
         TurnEnd
     }
-    private CurrentGameState gameState;
+    [HideInInspector]
+    public CurrentGameState gameState;
 
     private int whichEntityTurn = 0;
     private Entity currentEntityTurn;
@@ -25,6 +26,7 @@ public class GameManager : MonoBehaviour
     private BlockManager blockManager;
     private PlayerInput playerInput;
     private EntityManager entityManager;
+    private UIManager uiManager;
 
     void Awake()
     {
@@ -32,6 +34,7 @@ public class GameManager : MonoBehaviour
         blockManager = FindObjectOfType<BlockManager>();
         playerInput = FindObjectOfType<PlayerInput>();
         entityManager = FindObjectOfType<EntityManager>();
+        uiManager = FindObjectOfType<UIManager>();
     }
 
     void Start()
@@ -39,6 +42,7 @@ public class GameManager : MonoBehaviour
         gameState = CurrentGameState.TurnStart;
 
         currentEntityTurn = entityManager.currentEntities[whichEntityTurn];
+        uiManager.UpdateInfoPanelPlayer(currentEntityTurn);
     }
 
     void Update()
@@ -82,15 +86,21 @@ public class GameManager : MonoBehaviour
                         blockManager.ResetPaths();
                         gameState = CurrentGameState.Moving;
                     }
+
+                    Entity lookAtEntity = entityManager.EntityAboveBlock(hitBlock);
+                    if (lookAtEntity && lookAtEntity != currentEntityTurn)
+                    {
+                        uiManager.UpdateInfoPanelOther(lookAtEntity);
+                        uiManager.ToggleInfoPanelOther(true);
+                    }
+                    else
+                    {
+                        uiManager.ToggleInfoPanelOther(false);
+                    }
                 }
                 else
                 {
                     blockManager.RemoveHighlightBlock();
-                }
-
-                if (Input.GetKeyDown(KeyCode.Space))
-                {
-                    gameState = CurrentGameState.TurnEnd;
                 }
 
                 break;
@@ -117,7 +127,7 @@ public class GameManager : MonoBehaviour
                 blockManager.ResetPaths();
                 currentEntityTurn.ResetValues();
 
-                //whichEntityTurn++;
+                whichEntityTurn++;
                 if (whichEntityTurn == entityManager.currentEntities.Count)
                 {
                     whichEntityTurn = 0;

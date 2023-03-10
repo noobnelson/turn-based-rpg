@@ -23,7 +23,7 @@ public class EntityManager : MonoBehaviour
     {
         RaycastHit hit;
         Entity entity = null;
-        if (Physics.Raycast(entity.transform.position, Vector3.down, out hit, Mathf.Infinity))
+        if (Physics.Raycast(block.transform.position, Vector3.up, out hit, Mathf.Infinity))
         {
             entity = hit.collider.GetComponentInParent<Entity>();
         }
