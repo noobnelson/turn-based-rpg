@@ -144,4 +144,9 @@ MonoBehaviour:
   currentMovementPoints: 0
   healthPoints: 5
   currentHealthPoints: 0
+  actionList:
+  - {fileID: 11400000, guid: 51fc5a5405e1ecc49a0a2f632c846476, type: 2}
+  - {fileID: 11400000, guid: eb0e3a50946d5744582b90fce74dcff1, type: 2}
+  - {fileID: 11400000, guid: 419a48d4e4b3c8a43bff689313d1e2a2, type: 2}
+  - {fileID: 11400000, guid: 8de510663696afe4ca5e9bcb08c1999a, type: 2}
   playerControlled: 1

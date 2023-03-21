@@ -11,6 +11,8 @@ public abstract class Entity : MonoBehaviour
     [HideInInspector]
     public int currentHealthPoints;
 
+    public List<Action> actionList = new List<Action>();
+    
     public bool playerControlled;
 
     virtual protected void Awake()
