@@ -8,17 +8,11 @@ public class EntityMove : MonoBehaviour
     private float minDistanceToTarget = 0.1f;
     [SerializeField]
     private float movementSpeed = 1f;
-    
-    private GameManager gameState;
-
-    void Awake()
-    {
-        gameState = FindObjectOfType<GameManager>();
-    }
+    public bool moving;
 
     public IEnumerator MoveEntity(Entity entity, Block newBlock, List<Block> path)
     {
-        gameState.moving = true;
+        moving = true;
         entity.currentMovementPoints -= path.Count;
         foreach (Block block in path)
         {
@@ -34,7 +28,7 @@ public class EntityMove : MonoBehaviour
             }
             entity.transform.position = targetPosition;
         }
-        gameState.moving = false;
+        moving = false;
         yield return null;
     }
 }

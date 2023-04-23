@@ -10,7 +10,8 @@ public class GameManager : MonoBehaviour
         PlayerInput,
         ComputerInput,
         Moving,
-        Attacking,
+        ActionStart,
+        ActionSelect,
         TurnEnd
     }
     [HideInInspector]
@@ -18,15 +19,16 @@ public class GameManager : MonoBehaviour
 
     private int whichEntityTurn = 0;
     private Entity currentEntityTurn;
-    [HideInInspector]
-    public bool moving;
     private Block currentEntityBlock;
+    //[HideInInspector]
+    public Action currentAction;
 
     private Camera cam;
     private BlockManager blockManager;
     private PlayerInput playerInput;
     private EntityManager entityManager;
     private UIManager uiManager;
+    private PathFinding pathFinding;
 
     void Awake()
     {
@@ -35,6 +37,7 @@ public class GameManager : MonoBehaviour
         playerInput = FindObjectOfType<PlayerInput>();
         entityManager = FindObjectOfType<EntityManager>();
         uiManager = FindObjectOfType<UIManager>();
+        pathFinding = new PathFinding();
     }
 
     void Start()
@@ -53,15 +56,18 @@ public class GameManager : MonoBehaviour
         switch (gameState)
         {
             case CurrentGameState.TurnStart:
-                currentEntityBlock = blockManager.BlockBelowEntity(currentEntityTurn);
+                currentEntityBlock = blockManager.FindBlockBelowEntity(currentEntityTurn);
+                
                 if (currentEntityTurn.currentMovementPoints != 0)
                 {
-                    blockManager.FindAvailableMoves(currentEntityBlock, currentEntityTurn.currentMovementPoints);
-                    blockManager.HighlightAllCells(true);
+                    blockManager.ResetPaths();
+                    blockManager.currentAvailableMovementBlocks = pathFinding.AvailableMoves(currentEntityBlock, currentEntityTurn.currentMovementPoints, blockManager.BlockGrid, blockManager.currentMovementBlockPaths);
+                    blockManager.HighlightAllCells(true, blockManager.currentAvailableMovementBlocks);
                 }
 
                 if (currentEntityTurn.playerControlled)
                 {
+                    uiManager.UpdateActions(currentEntityTurn.actionList);
                     gameState = CurrentGameState.PlayerInput;
                 }
                 else
@@ -75,19 +81,21 @@ public class GameManager : MonoBehaviour
                 if (Physics.Raycast(ray.origin, ray.direction, out hit, Mathf.Infinity, blockManager.BlockLayerMask))
                 {
                     Block hitBlock = hit.collider.GetComponentInParent<Block>();
-                    blockManager.PointerHighlight(hitBlock);
-                    if (playerInput.MouseClick && blockManager.AvailableBlocks.Contains(hitBlock))
+                    blockManager.PointerHighlight(hitBlock, blockManager.currentAvailableMovementBlocks);
+                    if (playerInput.MouseClick && blockManager.currentAvailableMovementBlocks.Contains(hitBlock))
                     {
-                        List<Block> blockPathToFollow = blockManager.FindPathWithBlock(hitBlock);
+                        List<Block> blockPathToFollow = blockManager.FindPathWithBlock(blockManager.currentMovementBlockPaths, hitBlock);
                         blockManager.RemoveHighlightBlock();
                         blockManager.BlockCostMax(hitBlock);
                         blockManager.BlockCostReset(currentEntityBlock);
                         entityManager.MoveEntity(currentEntityTurn, hitBlock, blockPathToFollow);
+                        blockManager.HighlightAllCells(false, blockManager.currentAvailableMovementBlocks);
+
                         blockManager.ResetPaths();
                         gameState = CurrentGameState.Moving;
                     }
 
-                    Entity lookAtEntity = entityManager.EntityAboveBlock(hitBlock);
+                    Entity lookAtEntity = entityManager.FindEntityAboveBlock(hitBlock);
                     if (lookAtEntity && lookAtEntity != currentEntityTurn)
                     {
                         uiManager.UpdateInfoPanelOther(lookAtEntity);
@@ -111,20 +119,26 @@ public class GameManager : MonoBehaviour
                 break;
 
             case CurrentGameState.Moving:
-                if (!moving)
+                bool currentlyMoving = entityManager.CheckMoving();
+                if (!currentlyMoving)
                 {
                     gameState = CurrentGameState.TurnStart;
                 }
 
                 break;
 
-            case CurrentGameState.Attacking:
-                gameState = CurrentGameState.TurnStart;
+            case CurrentGameState.ActionStart:
+                //Debug.Log("where to attack");
+                //gameState = CurrentGameState.TurnStart;
 
                 break;
 
+            case CurrentGameState.ActionSelect:
+                break;
+
             case CurrentGameState.TurnEnd:
-                blockManager.ResetPaths();
+                blockManager.HighlightAllCells(false, blockManager.currentAvailableMovementBlocks);
+                blockManager.RemoveHighlightBlock();
                 currentEntityTurn.ResetValues();
 
                 whichEntityTurn++;

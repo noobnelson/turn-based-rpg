@@ -23,6 +23,11 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    public void UpdateActions(List<Action> actions)
+    {
+        uiGameplay.UpdateActions(actions);
+    }
+    
     public void UpdateInfoPanelPlayer(Entity entity)
     {
         uiGameplay.UpdateInfoPanelPlayer(entity);

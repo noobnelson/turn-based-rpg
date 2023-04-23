@@ -26,6 +26,4 @@ public class Action : ScriptableObject
             effect.ApplyEffect(entity);
         }
     }
-
-
 }

@@ -5,7 +5,6 @@ using UnityEngine;
 public class BlockManager : MonoBehaviour
 {
     public Block[,] BlockGrid { get; private set; }
-    public List<Block> AvailableBlocks { get; private set; } = new List<Block>();
 
     private Block currentHighlightBlock;
     [SerializeField]
@@ -13,12 +12,15 @@ public class BlockManager : MonoBehaviour
     public int BlockLayerMask { get; private set; }
     private int maxCost = 99;
 
+    // NOTE: add these to different class?
+    public List<List<Block>> currentMovementBlockPaths = new List<List<Block>>();
+    public List<Block> currentAvailableMovementBlocks = new List<Block>();
+
     private PathFinding pathFinding;
     private FileManager fileManager;
 
     void Awake()
     {
-        pathFinding = FindObjectOfType<PathFinding>();
         fileManager = FindObjectOfType<FileManager>();
 
         BlockLayerMask = 1 << blockLayer;
@@ -31,6 +33,40 @@ public class BlockManager : MonoBehaviour
         int yGridCount = fileManager.FileText.Length;
 
         BlockGrid = new Block[xGridCount, yGridCount];
+    }
+
+    public void ResetPaths()
+    {
+        currentMovementBlockPaths.Clear();
+        currentAvailableMovementBlocks.Clear();
+    }
+
+    public List<Block> FindPathWithBlock(List<List<Block>> blockPaths, Block block)
+    {
+        List<Block> pathWithBlock = new List<Block>();
+        int blockPositionInList;
+        foreach (List<Block> blockList in blockPaths)
+        {
+            if (blockList.Contains(block))
+            {
+                blockPositionInList = blockList.IndexOf(block);
+                pathWithBlock = blockList.GetRange(0, blockPositionInList + 1);
+                return pathWithBlock;
+            }
+        }
+
+        return pathWithBlock;
+    }
+
+    public Block FindBlockBelowEntity(Entity entity)
+    {
+        RaycastHit hit;
+        Block block = null;
+        if (Physics.Raycast(entity.transform.position, Vector3.down, out hit, Mathf.Infinity))
+        {
+            block = hit.collider.GetComponentInParent<Block>();
+        }
+        return block;
     }
 
     public void BlockCostMax(Block block)
@@ -53,27 +89,27 @@ public class BlockManager : MonoBehaviour
         block.cellHighlight.gameObject.SetActive(b);
     }
 
-    public void HighlightAllCells(bool b)
+    public void HighlightAllCells(bool b, List<Block> blocks)
     {
-        foreach (Block block in AvailableBlocks)
+        foreach (Block block in blocks)
         {
             HighlightCellAvailable(block, b);
         }
     }
 
-    public void PointerHighlight(Block block)
+    public void PointerHighlight(Block block, List<Block> blocks)
     {
-        if (!AvailableBlocks.Contains(block) && currentHighlightBlock)
+        if (!blocks.Contains(block) && currentHighlightBlock)
         {
             HighlightCellAvailable(currentHighlightBlock, true);
             HighlightCellHighlight(currentHighlightBlock, false);
             currentHighlightBlock = null;
         }
-        if (!AvailableBlocks.Contains(block) || currentHighlightBlock == block)
+        if (!blocks.Contains(block) || currentHighlightBlock == block)
         {
             return;
         }
-        else if (AvailableBlocks.Contains(block))
+        else if (blocks.Contains(block))
         {
             if (currentHighlightBlock)
             {
@@ -96,45 +132,5 @@ public class BlockManager : MonoBehaviour
             HighlightCellHighlight(currentHighlightBlock, false);
             currentHighlightBlock = null;
         }
-    }
-
-    public List<Block> FindPathWithBlock(Block block)
-    {
-        List<Block> pathWithBlock = new List<Block>();
-        int blockPositionInList;
-        foreach (List<Block> blockList in pathFinding.CurrentBlockPaths)
-        {
-            if (blockList.Contains(block))
-            {
-                blockPositionInList = blockList.IndexOf(block);
-                pathWithBlock = blockList.GetRange(0, blockPositionInList + 1);
-                return pathWithBlock;
-            }
-        }
-
-        return pathWithBlock;
-    }
-
-    public void FindAvailableMoves(Block startBlock, int movementPoints)
-    {
-        AvailableBlocks = pathFinding.AvailableMoves(startBlock, movementPoints, BlockGrid);
-    }
-
-    public Block BlockBelowEntity(Entity entity)
-    {
-        RaycastHit hit;
-        Block block = null;
-        if (Physics.Raycast(entity.transform.position, Vector3.down, out hit, Mathf.Infinity))
-        {
-            block = hit.collider.GetComponentInParent<Block>();
-        }
-        return block;
-    }
-
-    public void ResetPaths()
-    {
-        HighlightAllCells(false);
-        RemoveHighlightBlock();
-        AvailableBlocks.Clear();
     }
 }

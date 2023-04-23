@@ -8,6 +8,8 @@ public class UIGameplay : MonoBehaviour
     private GameManager gameManager;
 
     [SerializeField]
+    private List<Button> actionButtons = new List<Button>();
+    [SerializeField]
     private GameObject infoPlayerPanel;
     [SerializeField]
     private GameObject infoOtherPanel;
@@ -26,7 +28,34 @@ public class UIGameplay : MonoBehaviour
 
     void Awake()
     {
-        gameManager = FindObjectOfType<GameManager>();    
+        gameManager = FindObjectOfType<GameManager>();
+    }
+
+    public void UpdateActions(List<Action> actions)
+    {
+        for (int i = 0; i < actionButtons.Count; i++)
+        {
+            int x = i;
+            actionButtons[i].GetComponentInChildren<Text>().text = actions[i].name;
+            actionButtons[i].onClick.AddListener(() => UpdateCurrentAction(actions[x]));
+        }
+    }
+
+    public void UpdateCurrentAction(Action action)
+    {
+        if (gameManager.currentAction == action && gameManager.gameState == GameManager.CurrentGameState.ActionSelect)
+        {
+            gameManager.currentAction = null;
+            gameManager.gameState = GameManager.CurrentGameState.TurnStart;
+        }
+        else if (gameManager.currentAction != action)
+        {
+            gameManager.currentAction = action;
+            if (gameManager.gameState == GameManager.CurrentGameState.PlayerInput)
+            {
+                gameManager.gameState = GameManager.CurrentGameState.ActionStart;
+            }
+        }        
     }
 
     public void ButtonEndTurn()

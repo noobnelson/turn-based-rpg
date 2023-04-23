@@ -19,7 +19,12 @@ public class EntityManager : MonoBehaviour
         StartCoroutine(entityMove.MoveEntity(entity, newBlock, path));
     }
 
-    public Entity EntityAboveBlock(Block block)
+    public bool CheckMoving()
+    {
+        return entityMove.moving;
+    }
+        
+    public Entity FindEntityAboveBlock(Block block)
     {
         RaycastHit hit;
         Entity entity = null;
