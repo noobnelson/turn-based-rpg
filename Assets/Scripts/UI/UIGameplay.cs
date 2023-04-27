@@ -43,19 +43,19 @@ public class UIGameplay : MonoBehaviour
 
     public void UpdateCurrentAction(Action action)
     {
+        // Click the same action that is currently selected = go back to moving player
         if (gameManager.currentAction == action && gameManager.gameState == GameManager.CurrentGameState.ActionSelect)
         {
             gameManager.currentAction = null;
             gameManager.gameState = GameManager.CurrentGameState.TurnStart;
         }
-        else if (gameManager.currentAction != action)
+        // Click new action to perform
+        else if (gameManager.currentAction != action &&
+            (gameManager.gameState == GameManager.CurrentGameState.PlayerInput || gameManager.gameState == GameManager.CurrentGameState.ActionSelect))
         {
             gameManager.currentAction = action;
-            if (gameManager.gameState == GameManager.CurrentGameState.PlayerInput)
-            {
-                gameManager.gameState = GameManager.CurrentGameState.ActionStart;
-            }
-        }        
+            gameManager.gameState = GameManager.CurrentGameState.ActionStart;
+        }
     }
 
     public void ButtonEndTurn()

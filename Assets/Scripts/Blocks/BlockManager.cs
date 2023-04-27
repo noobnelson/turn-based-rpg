@@ -12,9 +12,16 @@ public class BlockManager : MonoBehaviour
     public int BlockLayerMask { get; private set; }
     private int maxCost = 99;
 
+    public Color colorMove;
+    public Color colorHighlight;
+    public Color colorAttackRange;
+    public Color colorAttackArea;
+
     // NOTE: add these to different class?
     public List<List<Block>> currentMovementBlockPaths = new List<List<Block>>();
     public List<Block> currentAvailableMovementBlocks = new List<Block>();
+    public List<Block> currentAvailableAttackBlocks = new List<Block>();
+    public List<Block> currentAvailableAreaAttackBlocks = new List<Block>();
 
     private PathFinding pathFinding;
     private FileManager fileManager;
@@ -35,10 +42,19 @@ public class BlockManager : MonoBehaviour
         BlockGrid = new Block[xGridCount, yGridCount];
     }
 
+    public void ChangeCellColor(Color color, Renderer renderer, MaterialPropertyBlock propBlock)
+    {
+        renderer.GetPropertyBlock(propBlock); // get current value of material properties in renderer
+        propBlock.SetColor("_Color", color); // assign new value
+        renderer.SetPropertyBlock(propBlock); // apply edited value to renderer
+    }
+
     public void ResetPaths()
     {
         currentMovementBlockPaths.Clear();
         currentAvailableMovementBlocks.Clear();
+        currentAvailableAttackBlocks.Clear();
+        currentAvailableAreaAttackBlocks.Clear();
     }
 
     public List<Block> FindPathWithBlock(List<List<Block>> blockPaths, Block block)
@@ -79,58 +95,34 @@ public class BlockManager : MonoBehaviour
         block.currentMovementCost = block.MovementCost;
     }
 
-    public void HighlightCellAvailable(Block block, bool b)
+    public void HighlightAndActiveCells(List<Block> blockList, Color color)
     {
-        block.cellAvailable.gameObject.SetActive(b);
+        foreach (Block block in blockList)
+        {
+            block.cell.SetActive(true);
+            HighlightCell(block, color);
+        }
     }
 
-    public void HighlightCellHighlight(Block block, bool b)
+    public void DeactiveCells(List<Block> blockList)
     {
-        block.cellHighlight.gameObject.SetActive(b);
+        foreach (Block block in blockList)
+        {
+            block.cell.SetActive(false);
+        }
     }
 
-    public void HighlightAllCells(bool b, List<Block> blocks)
+    public void HighlightCell(Block block, Color color)
+    {
+        block.cell.SetActive(true);
+        ChangeCellColor(color, block.cellWithMaterialPropertyBlock._renderer, block.cellWithMaterialPropertyBlock._propBlock);
+    }
+
+    public void HighlightCells(List<Block> blocks, Color color)
     {
         foreach (Block block in blocks)
         {
-            HighlightCellAvailable(block, b);
-        }
-    }
-
-    public void PointerHighlight(Block block, List<Block> blocks)
-    {
-        if (!blocks.Contains(block) && currentHighlightBlock)
-        {
-            HighlightCellAvailable(currentHighlightBlock, true);
-            HighlightCellHighlight(currentHighlightBlock, false);
-            currentHighlightBlock = null;
-        }
-        if (!blocks.Contains(block) || currentHighlightBlock == block)
-        {
-            return;
-        }
-        else if (blocks.Contains(block))
-        {
-            if (currentHighlightBlock)
-            {
-                HighlightCellAvailable(currentHighlightBlock, true);
-                HighlightCellHighlight(currentHighlightBlock, false);
-            }
-
-            currentHighlightBlock = block;
-            HighlightCellAvailable(currentHighlightBlock, false);
-            HighlightCellHighlight(currentHighlightBlock, true);
-
-        }
-    }
-
-    public void RemoveHighlightBlock()
-    {
-        if (currentHighlightBlock)
-        {
-            HighlightCellAvailable(currentHighlightBlock, true);
-            HighlightCellHighlight(currentHighlightBlock, false);
-            currentHighlightBlock = null;
+            HighlightCell(block, color);
         }
     }
 }

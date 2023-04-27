@@ -2041,6 +2041,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   blockLayer: 6
+  colorMove: {r: 0.30514917, g: 0.8584906, b: 0.28751338, a: 0}
+  colorHighlight: {r: 0.9655699, g: 1, b: 0.3537736, a: 0}
+  colorAttackRange: {r: 1, g: 0.7216981, b: 0.7216981, a: 0}
+  colorAttackArea: {r: 1, g: 0.25943398, b: 0.25943398, a: 0}
+  currentAvailableMovementBlocks: []
+  currentAvailableAttackBlocks: []
+  currentAvailableAreaAttackBlocks: []
 --- !u!114 &1692766147
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2198,7 +2205,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameState: 0
-  moving: 0
   currentAction: {fileID: 0}
 --- !u!114 &1879203732
 MonoBehaviour:
@@ -2233,6 +2239,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   minDistanceToTarget: 0.05
   movementSpeed: 3
+  moving: 0
 --- !u!1 &1902641786
 GameObject:
   m_ObjectHideFlags: 0

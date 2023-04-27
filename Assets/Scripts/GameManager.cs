@@ -18,8 +18,8 @@ public class GameManager : MonoBehaviour
     public CurrentGameState gameState;
 
     private int whichEntityTurn = 0;
-    private Entity currentEntityTurn;
-    private Block currentEntityBlock;
+    public Entity currentEntityTurn;
+    public Block currentEntityBlock;
     //[HideInInspector]
     public Action currentAction;
 
@@ -57,12 +57,15 @@ public class GameManager : MonoBehaviour
         {
             case CurrentGameState.TurnStart:
                 currentEntityBlock = blockManager.FindBlockBelowEntity(currentEntityTurn);
+                blockManager.DeactiveCells(blockManager.currentAvailableAttackBlocks);
                 
                 if (currentEntityTurn.currentMovementPoints != 0)
                 {
                     blockManager.ResetPaths();
-                    blockManager.currentAvailableMovementBlocks = pathFinding.AvailableMoves(currentEntityBlock, currentEntityTurn.currentMovementPoints, blockManager.BlockGrid, blockManager.currentMovementBlockPaths);
-                    blockManager.HighlightAllCells(true, blockManager.currentAvailableMovementBlocks);
+                    blockManager.currentAvailableMovementBlocks =
+                        pathFinding.AvailableMoves(
+                            currentEntityBlock, currentEntityTurn.currentMovementPoints, blockManager.BlockGrid, blockManager.currentMovementBlockPaths);
+                    blockManager.HighlightCells(blockManager.currentAvailableMovementBlocks, blockManager.colorMove);
                 }
 
                 if (currentEntityTurn.playerControlled)
@@ -81,34 +84,29 @@ public class GameManager : MonoBehaviour
                 if (Physics.Raycast(ray.origin, ray.direction, out hit, Mathf.Infinity, blockManager.BlockLayerMask))
                 {
                     Block hitBlock = hit.collider.GetComponentInParent<Block>();
-                    blockManager.PointerHighlight(hitBlock, blockManager.currentAvailableMovementBlocks);
                     if (playerInput.MouseClick && blockManager.currentAvailableMovementBlocks.Contains(hitBlock))
                     {
                         List<Block> blockPathToFollow = blockManager.FindPathWithBlock(blockManager.currentMovementBlockPaths, hitBlock);
-                        blockManager.RemoveHighlightBlock();
                         blockManager.BlockCostMax(hitBlock);
                         blockManager.BlockCostReset(currentEntityBlock);
                         entityManager.MoveEntity(currentEntityTurn, hitBlock, blockPathToFollow);
-                        blockManager.HighlightAllCells(false, blockManager.currentAvailableMovementBlocks);
+                        blockManager.DeactiveCells(blockManager.currentAvailableMovementBlocks);
 
                         blockManager.ResetPaths();
                         gameState = CurrentGameState.Moving;
                     }
 
-                    Entity lookAtEntity = entityManager.FindEntityAboveBlock(hitBlock);
-                    if (lookAtEntity && lookAtEntity != currentEntityTurn)
+                    // Hover over an entity to see their stats
+                    Entity lookAtEntityStats = entityManager.FindEntityAboveBlock(hitBlock);
+                    if (lookAtEntityStats && lookAtEntityStats != currentEntityTurn)
                     {
-                        uiManager.UpdateInfoPanelOther(lookAtEntity);
+                        uiManager.UpdateInfoPanelOther(lookAtEntityStats);
                         uiManager.ToggleInfoPanelOther(true);
                     }
                     else
                     {
                         uiManager.ToggleInfoPanelOther(false);
                     }
-                }
-                else
-                {
-                    blockManager.RemoveHighlightBlock();
                 }
 
                 break;
@@ -128,17 +126,22 @@ public class GameManager : MonoBehaviour
                 break;
 
             case CurrentGameState.ActionStart:
-                //Debug.Log("where to attack");
-                //gameState = CurrentGameState.TurnStart;
-
+                blockManager.DeactiveCells(blockManager.currentAvailableMovementBlocks);
+                blockManager.DeactiveCells(blockManager.currentAvailableAttackBlocks);
+                blockManager.ResetPaths();
+                blockManager.currentAvailableAttackBlocks =
+                    pathFinding.AvailablePositions(currentEntityBlock, currentAction.castRange, blockManager.BlockGrid);
+                blockManager.HighlightAndActiveCells(blockManager.currentAvailableAttackBlocks, blockManager.colorAttackRange);
+                
+                gameState = CurrentGameState.ActionSelect;
                 break;
 
             case CurrentGameState.ActionSelect:
                 break;
 
             case CurrentGameState.TurnEnd:
-                blockManager.HighlightAllCells(false, blockManager.currentAvailableMovementBlocks);
-                blockManager.RemoveHighlightBlock();
+                blockManager.DeactiveCells(blockManager.currentAvailableMovementBlocks);
+
                 currentEntityTurn.ResetValues();
 
                 whichEntityTurn++;
@@ -148,7 +151,7 @@ public class GameManager : MonoBehaviour
                 }
                 currentEntityTurn = entityManager.currentEntities[whichEntityTurn];
                 gameState = CurrentGameState.TurnStart;
-                
+
                 break;
         }
     }
