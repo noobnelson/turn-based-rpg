@@ -26,6 +26,7 @@ public class PathFinding
     public List<Block> AvailablePositions(Block startBlock, int maxCost, Block[,] blockGrid) 
     {
         List<Block> availablePositions = new List<Block>();
+        availablePositions.Add(startBlock);
         List<Block> accessedBlocks = new List<Block>() { startBlock };
         List<PathAndCost> incompletePathsWithCost =
                     new List<PathAndCost>() { new PathAndCost(new List<Block>() { startBlock }, 0) };

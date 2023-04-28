@@ -6,16 +6,17 @@ public class BlockManager : MonoBehaviour
 {
     public Block[,] BlockGrid { get; private set; }
 
-    private Block currentHighlightBlock;
+    public Block currentHighlightBlock;
     [SerializeField]
     private int blockLayer = 6;
     public int BlockLayerMask { get; private set; }
     private int maxCost = 99;
 
     public Color colorMove;
-    public Color colorHighlight;
+    public Color colorPointer;
     public Color colorAttackRange;
     public Color colorAttackArea;
+    private Color previousColorOfBlock;
 
     // NOTE: add these to different class?
     public List<List<Block>> currentMovementBlockPaths = new List<List<Block>>();
@@ -123,6 +124,15 @@ public class BlockManager : MonoBehaviour
         foreach (Block block in blocks)
         {
             HighlightCell(block, color);
+        }
+    }
+
+    public void PointerHighlight(Block block)
+    {
+        if (currentHighlightBlock != block)
+        {
+            currentHighlightBlock = block;
+            HighlightCell(block, colorPointer);
         }
     }
 }

@@ -2040,9 +2040,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72c706663bd638f438721b5822227406, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentHighlightBlock: {fileID: 0}
   blockLayer: 6
   colorMove: {r: 0.30514917, g: 0.8584906, b: 0.28751338, a: 0}
-  colorHighlight: {r: 0.9655699, g: 1, b: 0.3537736, a: 0}
+  colorPointer: {r: 0.94242716, g: 1, b: 0.5707547, a: 0}
   colorAttackRange: {r: 1, g: 0.7216981, b: 0.7216981, a: 0}
   colorAttackArea: {r: 1, g: 0.25943398, b: 0.25943398, a: 0}
   currentAvailableMovementBlocks: []
@@ -2205,6 +2206,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameState: 0
+  currentEntityTurn: {fileID: 0}
+  currentEntityBlock: {fileID: 0}
   currentAction: {fileID: 0}
 --- !u!114 &1879203732
 MonoBehaviour:

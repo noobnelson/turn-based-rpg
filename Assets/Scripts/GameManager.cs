@@ -52,13 +52,13 @@ public class GameManager : MonoBehaviour
     {
         Ray ray = cam.ScreenPointToRay(playerInput.MousePos);
         RaycastHit hit;
-
+        bool mouseOverBlock = Physics.Raycast(ray.origin, ray.direction, out hit, Mathf.Infinity, blockManager.BlockLayerMask);
         switch (gameState)
         {
             case CurrentGameState.TurnStart:
                 currentEntityBlock = blockManager.FindBlockBelowEntity(currentEntityTurn);
                 blockManager.DeactiveCells(blockManager.currentAvailableAttackBlocks);
-                
+
                 if (currentEntityTurn.currentMovementPoints != 0)
                 {
                     blockManager.ResetPaths();
@@ -81,10 +81,10 @@ public class GameManager : MonoBehaviour
                 break;
 
             case CurrentGameState.PlayerInput:
-                if (Physics.Raycast(ray.origin, ray.direction, out hit, Mathf.Infinity, blockManager.BlockLayerMask))
+                if (mouseOverBlock)
                 {
                     Block hitBlock = hit.collider.GetComponentInParent<Block>();
-                    if (playerInput.MouseClick && blockManager.currentAvailableMovementBlocks.Contains(hitBlock))
+                    if (playerInput.MouseClick && blockManager.currentAvailableMovementBlocks.Contains(hitBlock)) // Click to move
                     {
                         List<Block> blockPathToFollow = blockManager.FindPathWithBlock(blockManager.currentMovementBlockPaths, hitBlock);
                         blockManager.BlockCostMax(hitBlock);
@@ -94,6 +94,31 @@ public class GameManager : MonoBehaviour
 
                         blockManager.ResetPaths();
                         gameState = CurrentGameState.Moving;
+                    }
+
+                    if (blockManager.currentAvailableMovementBlocks.Contains(hitBlock))
+                    {
+                        if (blockManager.currentHighlightBlock)
+                        {
+                            if (blockManager.currentHighlightBlock != hitBlock)
+                            {
+                                blockManager.HighlightCell(blockManager.currentHighlightBlock, blockManager.colorMove);
+                                blockManager.PointerHighlight(hitBlock);
+                            }
+                        }
+                        else
+                        {
+                            blockManager.PointerHighlight(hitBlock);
+                        }
+                    }
+                    else
+                    {
+                        if (blockManager.currentHighlightBlock)
+                        {
+                            blockManager.HighlightCell(blockManager.currentHighlightBlock, blockManager.colorMove);
+                            blockManager.currentHighlightBlock = null;
+                        }
+
                     }
 
                     // Hover over an entity to see their stats
@@ -106,6 +131,14 @@ public class GameManager : MonoBehaviour
                     else
                     {
                         uiManager.ToggleInfoPanelOther(false);
+                    }
+                }
+                else
+                {
+                    if (blockManager.currentHighlightBlock)
+                    {
+                        blockManager.HighlightCell(blockManager.currentHighlightBlock, blockManager.colorMove);
+                        blockManager.currentHighlightBlock = null;
                     }
                 }
 
@@ -132,11 +165,53 @@ public class GameManager : MonoBehaviour
                 blockManager.currentAvailableAttackBlocks =
                     pathFinding.AvailablePositions(currentEntityBlock, currentAction.castRange, blockManager.BlockGrid);
                 blockManager.HighlightAndActiveCells(blockManager.currentAvailableAttackBlocks, blockManager.colorAttackRange);
-                
+
                 gameState = CurrentGameState.ActionSelect;
+
                 break;
 
             case CurrentGameState.ActionSelect:
+                if (mouseOverBlock)
+                {
+                    Block hitBlock = hit.collider.GetComponentInParent<Block>();
+
+                    if (blockManager.currentAvailableAttackBlocks.Contains(hitBlock))
+                    {
+                        if (playerInput.MouseClick)
+                        {
+                            // perform action
+                        }
+
+                        if (blockManager.currentHighlightBlock)
+                        {
+                            if (blockManager.currentHighlightBlock != hitBlock)
+                            {
+                                blockManager.HighlightCell(blockManager.currentHighlightBlock, blockManager.colorAttackRange);
+                                blockManager.PointerHighlight(hitBlock);
+                            }
+                        }
+                        else
+                        {
+                            blockManager.PointerHighlight(hitBlock);
+                        }
+                    }
+                    else
+                    {
+                        if (blockManager.currentHighlightBlock)
+                        {
+                            blockManager.HighlightCell(blockManager.currentHighlightBlock, blockManager.colorAttackRange);
+                            blockManager.currentHighlightBlock = null;
+                        }
+                    }
+                }
+                else
+                {
+                    if (blockManager.currentHighlightBlock)
+                    {
+                        blockManager.HighlightCell(blockManager.currentHighlightBlock, blockManager.colorAttackRange);
+                        blockManager.currentHighlightBlock = null;
+                    }
+                }
                 break;
 
             case CurrentGameState.TurnEnd:
