@@ -6,7 +6,6 @@ public abstract class Block : MonoBehaviour
 {
     [HideInInspector]
     public Vector2Int positionOnGrid = new Vector2Int();
-    
     [SerializeField]
     private int movementCost;
     public int MovementCost { get{ return movementCost; } private set{ movementCost = value; } }

@@ -43,15 +43,15 @@ public class UIGameplay : MonoBehaviour
 
     public void UpdateCurrentAction(Action action)
     {
-        // Click the same action that is currently selected = go back to moving player
-        if (gameManager.currentAction == action && gameManager.gameState == GameManager.CurrentGameState.ActionSelect)
+        // Clicking the same action that is currently selected = go back to moving player
+        if (gameManager.currentAction == action && gameManager.gameState == GameManager.CurrentGameState.ActionInput)
         {
             gameManager.currentAction = null;
             gameManager.gameState = GameManager.CurrentGameState.TurnStart;
         }
         // Click new action to perform
         else if (gameManager.currentAction != action &&
-            (gameManager.gameState == GameManager.CurrentGameState.PlayerInput || gameManager.gameState == GameManager.CurrentGameState.ActionSelect))
+            (gameManager.gameState == GameManager.CurrentGameState.MoveInput || gameManager.gameState == GameManager.CurrentGameState.ActionInput))
         {
             gameManager.currentAction = action;
             gameManager.gameState = GameManager.CurrentGameState.ActionStart;
@@ -60,10 +60,18 @@ public class UIGameplay : MonoBehaviour
 
     public void ButtonEndTurn()
     {
-        if (gameManager.gameState == GameManager.CurrentGameState.PlayerInput)
+        if (gameManager.gameState == GameManager.CurrentGameState.MoveInput || gameManager.gameState == GameManager.CurrentGameState.ActionInput)
         {
             gameManager.gameState = GameManager.CurrentGameState.TurnEnd;
         }
+    }
+
+    private void UpdateInfoPanel(Entity entity, Text name, Text health, Text movement)
+    {
+        int endOfNameIndex = entity.gameObject.name.IndexOf("(");
+        name.text = entity.gameObject.name.Substring(0, endOfNameIndex);
+        health.text = "Health: " + entity.currentHealthPoints + "/" + entity.healthPoints;
+        movement.text = "Movement: " + entity.currentMovementPoints + "/" + entity.movementPoints;
     }
 
     public void UpdateInfoPanelPlayer(Entity entity)
@@ -74,14 +82,6 @@ public class UIGameplay : MonoBehaviour
     public void UpdateInfoPanelOther(Entity entity)
     {
         UpdateInfoPanel(entity, textNameOther, textHealthOther, textMovementOther);
-    }
-
-    private void UpdateInfoPanel(Entity entity, Text name, Text health, Text movement)
-    {
-        int endOfNameIndex = entity.gameObject.name.IndexOf("(");
-        name.text = entity.gameObject.name.Substring(0, endOfNameIndex);
-        health.text = "Health: " + entity.currentHealthPoints + "/" + entity.healthPoints;
-        movement.text = "Movement: " + entity.currentMovementPoints + "/" + entity.movementPoints;
     }
 
     public void ToggleInfoPanelOther(bool b)

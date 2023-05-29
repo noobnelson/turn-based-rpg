@@ -2,25 +2,30 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// NOTES: 
+// try to avoid the use of 'null'
+
 public class GameManager : MonoBehaviour
 {
     public enum CurrentGameState
     {
         TurnStart,
-        PlayerInput,
-        ComputerInput,
+        MoveStart,
+        MoveInput,
         Moving,
         ActionStart,
-        ActionSelect,
+        ActionInput,
+        PerformingAction,
         TurnEnd
     }
+
     [HideInInspector]
     public CurrentGameState gameState;
 
     private int whichEntityTurn = 0;
-    public Entity currentEntityTurn;
-    public Block currentEntityBlock;
-    //[HideInInspector]
+    private Entity currentEntityTurn;
+    private Block currentEntityBlock;
+    [HideInInspector]
     public Action currentAction;
 
     private Camera cam;
@@ -43,66 +48,67 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         gameState = CurrentGameState.TurnStart;
-
         currentEntityTurn = entityManager.currentEntities[whichEntityTurn];
-        uiManager.UpdateInfoPanelPlayer(currentEntityTurn);
     }
 
     void Update()
     {
         Ray ray = cam.ScreenPointToRay(playerInput.MousePos);
-        RaycastHit hit;
-        bool mouseOverBlock = Physics.Raycast(ray.origin, ray.direction, out hit, Mathf.Infinity, blockManager.BlockLayerMask);
+        RaycastHit blockHit;
+        bool mouseOverBlock = Physics.Raycast(ray.origin, ray.direction, out blockHit, Mathf.Infinity, blockManager.BlockLayerMask);
+
         switch (gameState)
         {
             case CurrentGameState.TurnStart:
+                uiManager.UpdateInfoPanelPlayer(currentEntityTurn);
                 currentEntityBlock = blockManager.FindBlockBelowEntity(currentEntityTurn);
                 blockManager.DeactiveCells(blockManager.currentAvailableAttackBlocks);
-
-                if (currentEntityTurn.currentMovementPoints != 0)
-                {
-                    blockManager.ResetPaths();
-                    blockManager.currentAvailableMovementBlocks =
-                        pathFinding.AvailableMoves(
-                            currentEntityBlock, currentEntityTurn.currentMovementPoints, blockManager.BlockGrid, blockManager.currentMovementBlockPaths);
-                    blockManager.HighlightCells(blockManager.currentAvailableMovementBlocks, blockManager.colorMove);
-                }
+                blockManager.ClearAllLists();
+                blockManager.currentAvailableMovementBlocks =
+                    pathFinding.AvailableMoves(
+                        currentEntityBlock, currentEntityTurn.currentMovementPoints, blockManager.BlockGrid, blockManager.currentMovementBlockPaths);
+                blockManager.HighlightAndActiveCells(blockManager.currentAvailableMovementBlocks, blockManager.colorMove);
 
                 if (currentEntityTurn.playerControlled)
                 {
                     uiManager.UpdateActions(currentEntityTurn.actionList);
-                    gameState = CurrentGameState.PlayerInput;
+                    gameState = CurrentGameState.MoveStart;
                 }
-                else
+                else // skip computer turn for now
                 {
-                    gameState = CurrentGameState.ComputerInput;
+                    gameState = CurrentGameState.TurnEnd;
                 }
 
                 break;
 
-            case CurrentGameState.PlayerInput:
+            case CurrentGameState.MoveStart:
+
+                gameState = CurrentGameState.MoveInput;
+
+                break;
+
+            case CurrentGameState.MoveInput:
                 if (mouseOverBlock)
                 {
-                    Block hitBlock = hit.collider.GetComponentInParent<Block>();
-                    if (playerInput.MouseClick && blockManager.currentAvailableMovementBlocks.Contains(hitBlock)) // Click to move
+                    Block hitBlock = blockHit.collider.GetComponentInParent<Block>();
+                    if (playerInput.MouseClick && blockManager.currentAvailableMovementBlocks.Contains(hitBlock)) // click to move
                     {
                         List<Block> blockPathToFollow = blockManager.FindPathWithBlock(blockManager.currentMovementBlockPaths, hitBlock);
                         blockManager.BlockCostMax(hitBlock);
                         blockManager.BlockCostReset(currentEntityBlock);
                         entityManager.MoveEntity(currentEntityTurn, hitBlock, blockPathToFollow);
                         blockManager.DeactiveCells(blockManager.currentAvailableMovementBlocks);
+                        blockManager.currentHighlightBlock = null;
 
-                        blockManager.ResetPaths();
                         gameState = CurrentGameState.Moving;
                     }
-
-                    if (blockManager.currentAvailableMovementBlocks.Contains(hitBlock))
+                    else if (blockManager.currentAvailableMovementBlocks.Contains(hitBlock)) // highlight hover spot
                     {
                         if (blockManager.currentHighlightBlock)
                         {
                             if (blockManager.currentHighlightBlock != hitBlock)
                             {
-                                blockManager.HighlightCell(blockManager.currentHighlightBlock, blockManager.colorMove);
+                                blockManager.HighlightAndActiveCell(blockManager.currentHighlightBlock, blockManager.colorMove);
                                 blockManager.PointerHighlight(hitBlock);
                             }
                         }
@@ -111,17 +117,17 @@ public class GameManager : MonoBehaviour
                             blockManager.PointerHighlight(hitBlock);
                         }
                     }
-                    else
+                    else // we're interacting with an unavailable cell
                     {
                         if (blockManager.currentHighlightBlock)
                         {
-                            blockManager.HighlightCell(blockManager.currentHighlightBlock, blockManager.colorMove);
+                            blockManager.HighlightAndActiveCell(blockManager.currentHighlightBlock, blockManager.colorMove);
                             blockManager.currentHighlightBlock = null;
                         }
 
                     }
 
-                    // Hover over an entity to see their stats
+                    // hover over an entity to see their stats
                     Entity lookAtEntityStats = entityManager.FindEntityAboveBlock(hitBlock);
                     if (lookAtEntityStats && lookAtEntityStats != currentEntityTurn)
                     {
@@ -133,19 +139,14 @@ public class GameManager : MonoBehaviour
                         uiManager.ToggleInfoPanelOther(false);
                     }
                 }
-                else
+                else // not hovering over any blocks
                 {
                     if (blockManager.currentHighlightBlock)
                     {
-                        blockManager.HighlightCell(blockManager.currentHighlightBlock, blockManager.colorMove);
+                        blockManager.HighlightAndActiveCell(blockManager.currentHighlightBlock, blockManager.colorMove);
                         blockManager.currentHighlightBlock = null;
                     }
                 }
-
-                break;
-
-            case CurrentGameState.ComputerInput:
-                gameState = CurrentGameState.TurnEnd;
 
                 break;
 
@@ -161,19 +162,19 @@ public class GameManager : MonoBehaviour
             case CurrentGameState.ActionStart:
                 blockManager.DeactiveCells(blockManager.currentAvailableMovementBlocks);
                 blockManager.DeactiveCells(blockManager.currentAvailableAttackBlocks);
-                blockManager.ResetPaths();
+                blockManager.ClearAllLists();
                 blockManager.currentAvailableAttackBlocks =
                     pathFinding.AvailablePositions(currentEntityBlock, currentAction.castRange, blockManager.BlockGrid);
                 blockManager.HighlightAndActiveCells(blockManager.currentAvailableAttackBlocks, blockManager.colorAttackRange);
 
-                gameState = CurrentGameState.ActionSelect;
+                gameState = CurrentGameState.ActionInput;
 
                 break;
 
-            case CurrentGameState.ActionSelect:
+            case CurrentGameState.ActionInput:
                 if (mouseOverBlock)
                 {
-                    Block hitBlock = hit.collider.GetComponentInParent<Block>();
+                    Block hitBlock = blockHit.collider.GetComponentInParent<Block>();
 
                     if (blockManager.currentAvailableAttackBlocks.Contains(hitBlock))
                     {
@@ -182,52 +183,59 @@ public class GameManager : MonoBehaviour
                             // perform action
                         }
 
-                        if (blockManager.currentHighlightBlock)
+                        if (blockManager.currentHighlightBlock) // replace highlight if one exists
                         {
                             if (blockManager.currentHighlightBlock != hitBlock)
                             {
-                                blockManager.HighlightCell(blockManager.currentHighlightBlock, blockManager.colorAttackRange);
+                                blockManager.HighlightAndActiveCell(blockManager.currentHighlightBlock, blockManager.colorAttackRange);
                                 blockManager.PointerHighlight(hitBlock);
                             }
                         }
-                        else
+                        else // highlight since none exist
                         {
                             blockManager.PointerHighlight(hitBlock);
                         }
                     }
-                    else
+                    else // remove highlight if there's one
                     {
                         if (blockManager.currentHighlightBlock)
                         {
-                            blockManager.HighlightCell(blockManager.currentHighlightBlock, blockManager.colorAttackRange);
+                            blockManager.HighlightAndActiveCell(blockManager.currentHighlightBlock, blockManager.colorAttackRange);
                             blockManager.currentHighlightBlock = null;
                         }
                     }
                 }
-                else
+                else // not over any cells
                 {
                     if (blockManager.currentHighlightBlock)
                     {
-                        blockManager.HighlightCell(blockManager.currentHighlightBlock, blockManager.colorAttackRange);
+                        blockManager.HighlightAndActiveCell(blockManager.currentHighlightBlock, blockManager.colorAttackRange);
                         blockManager.currentHighlightBlock = null;
                     }
                 }
+
                 break;
 
             case CurrentGameState.TurnEnd:
                 blockManager.DeactiveCells(blockManager.currentAvailableMovementBlocks);
-
                 currentEntityTurn.ResetValues();
-
                 whichEntityTurn++;
+
                 if (whichEntityTurn == entityManager.currentEntities.Count)
                 {
                     whichEntityTurn = 0;
                 }
+
                 currentEntityTurn = entityManager.currentEntities[whichEntityTurn];
                 gameState = CurrentGameState.TurnStart;
 
                 break;
+
+            case CurrentGameState.PerformingAction:
+                gameState = CurrentGameState.ActionStart;
+
+                break;
+
         }
     }
 }
