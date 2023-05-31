@@ -99,6 +99,37 @@ public class BlockManager : MonoBehaviour
             HighlightAndActiveCell(block, colorPointer);
         }
     }
+    public void RemoveHighlight(Color color)
+    {
+        if (currentHighlightBlock)
+        {
+            HighlightAndActiveCell(currentHighlightBlock, color);
+            currentHighlightBlock = null;
+        }
+    }
+
+    public void HighlightingCell(Block hitBlock, List<Block> blockList, Color color)
+    {
+        if (blockList.Contains(hitBlock)) // highlight hover spot
+        {
+            if (currentHighlightBlock) // highlight block exists
+            {
+                if (currentHighlightBlock != hitBlock)
+                {
+                    HighlightAndActiveCell(currentHighlightBlock, color);
+                    PointerHighlight(hitBlock);
+                }
+            }
+            else // no highlight block exists
+            {
+                PointerHighlight(hitBlock);
+            }
+        }
+        else // we're interacting with an unavailable cell
+        {
+            RemoveHighlight(color);
+        }
+    }
     //-----------------------
 
     // PATHS

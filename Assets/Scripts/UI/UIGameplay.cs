@@ -25,6 +25,10 @@ public class UIGameplay : MonoBehaviour
     private Text textMovementPlayer;
     [SerializeField]
     private Text textMovementOther;
+    [SerializeField]
+    private Text textActionPlayer;
+    [SerializeField]
+    private Text textActionOther;
 
     void Awake()
     {
@@ -66,22 +70,23 @@ public class UIGameplay : MonoBehaviour
         }
     }
 
-    private void UpdateInfoPanel(Entity entity, Text name, Text health, Text movement)
+    private void UpdateInfoPanel(Entity entity, Text name, Text health, Text movement, Text action)
     {
         int endOfNameIndex = entity.gameObject.name.IndexOf("(");
         name.text = entity.gameObject.name.Substring(0, endOfNameIndex);
         health.text = "Health: " + entity.currentHealthPoints + "/" + entity.healthPoints;
         movement.text = "Movement: " + entity.currentMovementPoints + "/" + entity.movementPoints;
+        action.text = "Action Points: " + entity.currentActionPoints + "/" + entity.actionPoints;
     }
 
     public void UpdateInfoPanelPlayer(Entity entity)
     {
-        UpdateInfoPanel(entity, textNamePlayer, textHealthPlayer, textMovementPlayer);
+        UpdateInfoPanel(entity, textNamePlayer, textHealthPlayer, textMovementPlayer, textActionPlayer);
     }
 
     public void UpdateInfoPanelOther(Entity entity)
     {
-        UpdateInfoPanel(entity, textNameOther, textHealthOther, textMovementOther);
+        UpdateInfoPanel(entity, textNameOther, textHealthOther, textMovementOther, textActionOther);
     }
 
     public void ToggleInfoPanelOther(bool b)

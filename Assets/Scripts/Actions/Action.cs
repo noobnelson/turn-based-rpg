@@ -8,6 +8,7 @@ public class Action : ScriptableObject
     public string actionName;
     public int castRange;
     public int actionRange;
+    public int actionCost;
     public List<Effect> effectSelf = new List<Effect>();
     public List<Effect> effectOther = new List<Effect>();
 

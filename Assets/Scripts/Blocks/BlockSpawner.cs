@@ -52,10 +52,10 @@ public class BlockSpawner : MonoBehaviour
                 newBlock.name = newBlock.name + xFileCount + yFileCount;
                 newBlock.positionOnGrid = new Vector2Int(xFileCount, yFileCount);
                 grid[xFileCount, yFileCount] = newBlock;
-                yFileCount++;
+                xFileCount++;
             }
-            xFileCount++;
-            yFileCount = 0;
+            xFileCount = 0;
+            yFileCount++;
         }
     }
 }

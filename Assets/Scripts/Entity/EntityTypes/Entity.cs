@@ -10,6 +10,9 @@ public abstract class Entity : MonoBehaviour
     public int healthPoints;
     [HideInInspector]
     public int currentHealthPoints;
+    public int actionPoints;
+    [HideInInspector]
+    public int currentActionPoints;
 
     public List<Action> actionList = new List<Action>();
     
@@ -24,5 +27,6 @@ public abstract class Entity : MonoBehaviour
     public void ResetValues()
     {
         currentMovementPoints = movementPoints;
+        currentActionPoints = actionPoints;
     }
 }
