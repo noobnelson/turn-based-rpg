@@ -123,6 +123,51 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &106660726
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 106660728}
+  - component: {fileID: 106660727}
+  m_Layer: 0
+  m_Name: Game Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &106660727
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 106660726}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e4457f8d071c744ea1072290b75460b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameState: 0
+  currentAction: {fileID: 0}
+--- !u!4 &106660728
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 106660726}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &151997620
 GameObject:
   m_ObjectHideFlags: 0
@@ -2347,7 +2392,6 @@ GameObject:
   - component: {fileID: 1879203730}
   - component: {fileID: 1879203729}
   - component: {fileID: 1879203732}
-  - component: {fileID: 1879203731}
   - component: {fileID: 1879203734}
   m_Layer: 0
   m_Name: Entity Manager
@@ -2383,20 +2427,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1879203731
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1879203728}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e4457f8d071c744ea1072290b75460b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gameState: 0
-  currentAction: {fileID: 0}
 --- !u!114 &1879203732
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2412,9 +2442,11 @@ MonoBehaviour:
   entities:
   - {fileID: 4080624150858105258, guid: dc539c6d3f6f1a54bafbcaedb9bb8a27, type: 3}
   - {fileID: 200898363679066392, guid: 32ee95f250f52ff4ea5d1cbe91ca596d, type: 3}
+  - {fileID: 4080624150858105258, guid: 5d3b4ec5441f29248b1c1fa37ce658fb, type: 3}
   entitiesStartPosition:
   - {x: 6, y: 3}
   - {x: 3, y: 6}
+  - {x: 7, y: 3}
   yPositionOffset: {x: 0, y: 0.51, z: 0}
 --- !u!114 &1879203734
 MonoBehaviour:

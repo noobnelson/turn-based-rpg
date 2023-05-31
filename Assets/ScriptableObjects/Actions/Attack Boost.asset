@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8705154fad622c246b8b0a81e0d02676, type: 3}
-  m_Name: Eat
+  m_Name: Attack Boost
   m_EditorClassIdentifier: 
-  actionName: Eat
-  castRange: 0
-  actionRange: 0
+  actionName: 
+  castRange: 3
+  areaOfEffectRange: 0
   actionCost: 5
-  effectSelf:
-  - {fileID: 11400000, guid: 993057fd54ddc6a4e942671c1eb2375d, type: 2}
-  effectOther: []
+  effectSelf: []
+  effectOther:
+  - {fileID: 11400000, guid: 47ef8b5a7b19a6e46be209ffa53a0e88, type: 2}

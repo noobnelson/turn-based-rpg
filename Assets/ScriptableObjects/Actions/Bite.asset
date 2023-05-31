@@ -15,6 +15,7 @@ MonoBehaviour:
   actionName: Bite
   castRange: 1
   actionRange: 0
+  actionCost: 5
   effectSelf:
   - {fileID: 11400000, guid: 201bdda7fd5ebf44aa3522f11f004154, type: 2}
   effectOther:

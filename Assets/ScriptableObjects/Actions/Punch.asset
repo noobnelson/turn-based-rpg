@@ -15,6 +15,7 @@ MonoBehaviour:
   actionName: Punch
   castRange: 1
   actionRange: 0
+  actionCost: 3
   effectSelf: []
   effectOther:
   - {fileID: 11400000, guid: 96c66138d372af3438481306345bac5e, type: 2}

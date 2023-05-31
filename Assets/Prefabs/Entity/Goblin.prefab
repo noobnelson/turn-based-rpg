@@ -141,6 +141,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   movementPoints: 2
   currentMovementPoints: 0
-  healthPoints: 2
+  healthPoints: 10
   currentHealthPoints: 0
+  actionPoints: 2
+  currentActionPoints: 0
+  actionList: []
   playerControlled: 0

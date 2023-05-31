@@ -60,7 +60,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 1e0dde2a62bcb0d45971780dfa9e7d90, type: 2}
+  - {fileID: 2100000, guid: 609e98bd2dbfac54f86e8990c67ea3ab, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -107,7 +107,7 @@ GameObject:
   - component: {fileID: 1678482948457854352}
   - component: {fileID: 4080624150858105258}
   m_Layer: 0
-  m_Name: Knight
+  m_Name: Cleric
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

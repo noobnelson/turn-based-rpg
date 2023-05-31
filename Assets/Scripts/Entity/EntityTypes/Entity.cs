@@ -22,6 +22,7 @@ public abstract class Entity : MonoBehaviour
     {
         currentMovementPoints = movementPoints;
         currentHealthPoints = healthPoints;
+        currentActionPoints = actionPoints;
     }
 
     public void ResetValues()

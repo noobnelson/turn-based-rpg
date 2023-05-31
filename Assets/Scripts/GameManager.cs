@@ -69,6 +69,7 @@ public class GameManager : MonoBehaviour
                     pathFinding.AvailableMoves(
                         currentEntityBlock, currentEntityTurn.currentMovementPoints, blockManager.BlockGrid, blockManager.currentMovementBlockPaths);
                 blockManager.HighlightAndActiveCells(blockManager.currentAvailableMovementBlocks, blockManager.colorMove);
+                currentAction = null;
 
                 if (currentEntityTurn.playerControlled)
                 {
@@ -151,9 +152,23 @@ public class GameManager : MonoBehaviour
                 if (mouseOverBlock)
                 {
                     Block hitBlock = blockHit.collider.GetComponentInParent<Block>();
-                    if (playerInput.MouseClick)
+                    if (playerInput.MouseClick && currentEntityTurn.currentActionPoints >= currentAction.actionCost)
                     {
-                        // perform action
+                        currentEntityTurn.currentActionPoints -= currentAction.actionCost;
+                        if (currentAction.effectSelf.Count > 0)
+                        {
+                            currentAction.PerformActionSelf(currentEntityTurn);
+                        }
+
+                        if (currentAction.effectOther.Count > 0)
+                        {
+                            Entity hitEntity = entityManager.FindEntityAboveBlock(hitBlock);
+                            if (hitEntity)
+                            {
+                                currentAction.PerformActionOther(hitEntity);
+                            }
+                        }
+
                         blockManager.DeactiveCells(blockManager.currentAvailableAttackBlocks);
                         blockManager.currentHighlightBlock = null;
                         currentAction = null;
