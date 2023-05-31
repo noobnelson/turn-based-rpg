@@ -12,11 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8705154fad622c246b8b0a81e0d02676, type: 3}
   m_Name: Bite
   m_EditorClassIdentifier: 
-  actionName: Bite
-  castRange: 1
-  actionRange: 0
-  actionCost: 5
-  effectSelf:
+  <ActionName>k__BackingField: Bite
+  <CastRange>k__BackingField: 1
+  <ActionCost>k__BackingField: 5
+  <EffectSelf>k__BackingField:
   - {fileID: 11400000, guid: 201bdda7fd5ebf44aa3522f11f004154, type: 2}
-  effectOther:
+  <EffectOther>k__BackingField:
   - {fileID: 11400000, guid: 152705319613eb143a7c6b8772c07917, type: 2}

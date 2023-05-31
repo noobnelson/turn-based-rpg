@@ -2203,10 +2203,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentHighlightBlock: {fileID: 0}
   blockLayer: 6
-  colorMove: {r: 0.30514917, g: 0.8584906, b: 0.28751338, a: 0}
-  colorPointer: {r: 0.94242716, g: 1, b: 0.5707547, a: 0}
-  colorAttackRange: {r: 1, g: 0.7216981, b: 0.7216981, a: 0}
-  colorAttackArea: {r: 1, g: 0.25943398, b: 0.25943398, a: 0}
+  <ColorMove>k__BackingField: {r: 0.36854753, g: 0.7735849, b: 0.40614286, a: 1}
+  <ColorPointer>k__BackingField: {r: 0.934147, g: 1, b: 0.4764151, a: 1}
+  <ColorAttackRange>k__BackingField: {r: 1, g: 0.6080848, b: 0.5707547, a: 1}
+  <ColorAttackArea>k__BackingField: {r: 0.6415094, g: 0.11196155, b: 0.44625703, a: 1}
   currentAvailableMovementBlocks: []
   currentAvailableAttackBlocks: []
   currentAvailableAreaAttackBlocks: []

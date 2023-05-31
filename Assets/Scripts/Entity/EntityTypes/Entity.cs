@@ -4,30 +4,34 @@ using UnityEngine;
 
 public abstract class Entity : MonoBehaviour
 {
-    public int movementPoints;
+    [field: SerializeField]
+    public int MovementPoints { get; private set; }
     [HideInInspector]
     public int currentMovementPoints;
-    public int healthPoints;
+    [field: SerializeField]
+    public int HealthPoints { get; private set; }
     [HideInInspector]
     public int currentHealthPoints;
-    public int actionPoints;
+    [field: SerializeField]
+    public int ActionPoints { get; private set; }
     [HideInInspector]
     public int currentActionPoints;
 
-    public List<Action> actionList = new List<Action>();
-    
-    public bool playerControlled;
+    [field: SerializeField]
+    public List<Action> ActionList { get; private set; } = new List<Action>();
+    [field: SerializeField]
+    public bool PlayerControlled { get; private set; }
 
     virtual protected void Awake()
     {
-        currentMovementPoints = movementPoints;
-        currentHealthPoints = healthPoints;
-        currentActionPoints = actionPoints;
+        currentMovementPoints = MovementPoints;
+        currentHealthPoints = HealthPoints;
+        currentActionPoints = ActionPoints;
     }
 
     public void ResetValues()
     {
-        currentMovementPoints = movementPoints;
-        currentActionPoints = actionPoints;
+        currentMovementPoints = MovementPoints;
+        currentActionPoints = ActionPoints;
     }
 }

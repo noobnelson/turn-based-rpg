@@ -12,10 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8705154fad622c246b8b0a81e0d02676, type: 3}
   m_Name: Eat
   m_EditorClassIdentifier: 
-  actionName: Eat
-  castRange: 0
-  actionRange: 0
-  actionCost: 5
-  effectSelf:
-  - {fileID: 11400000, guid: 993057fd54ddc6a4e942671c1eb2375d, type: 2}
-  effectOther: []
+  <ActionName>k__BackingField: Eat
+  <CastRange>k__BackingField: 0
+  <ActionCost>k__BackingField: 5
+  <EffectSelf>k__BackingField:
+  - {fileID: 11400000, guid: 201bdda7fd5ebf44aa3522f11f004154, type: 2}
+  <EffectOther>k__BackingField: []

@@ -7,6 +7,6 @@ public class EffectDamage : Effect
 {
     public override void ApplyEffect(Entity entity)
     {
-        entity.currentHealthPoints -= value;
+        entity.currentHealthPoints -= Value;
     }
 }

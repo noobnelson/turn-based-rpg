@@ -11,6 +11,7 @@ public abstract class Block : MonoBehaviour
     public int MovementCost { get{ return movementCost; } private set{ movementCost = value; } }
     [HideInInspector]
     public int currentMovementCost;
+    
     public CellWithMaterialPropertyBlock cellWithMaterialPropertyBlock;
     public GameObject cell;
 

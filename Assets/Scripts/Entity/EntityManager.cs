@@ -21,7 +21,7 @@ public class EntityManager : MonoBehaviour
 
     public bool CheckMoving()
     {
-        return entityMove.moving;
+        return entityMove.Moving;
     }
         
     public Entity FindEntityAboveBlock(Block block)

@@ -5,9 +5,9 @@ using UnityEngine;
 /////////////// WIP CLASS ////////////////////////////
 // Works but need to clean up code (ie. duplicate code)
 
-public class PathFinding
+public static class PathFinding
 {
-    public struct PathAndCost
+    private struct PathAndCost
     {
         public List<Block> blockPath;
         public int cost;
@@ -19,11 +19,11 @@ public class PathFinding
         }
     }
 
-    private List<Vector2Int> neighbourPositions =
+    public static readonly List<Vector2Int> neighbourPositions =
         new List<Vector2Int>() { Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left };
 
     // WIP: looks for available blocks, ALL block costs = 1, doesnt need a path
-    public List<Block> AvailablePositions(Block startBlock, int maxCost, Block[,] blockGrid) 
+    public static List<Block> AvailablePositions(Block startBlock, int maxCost, Block[,] blockGrid) 
     {
         List<Block> availablePositions = new List<Block>();
         availablePositions.Add(startBlock);
@@ -90,7 +90,7 @@ public class PathFinding
     }
 
     // WIP: looks for available movements, block costs = cost of block ie. wall = 99, needs paths
-    public List<Block> AvailableMoves(Block startBlock, int movementPoints, Block[,] blockGrid, List<List<Block>> blockPaths)
+    public static List<Block> AvailableMoves(Block startBlock, int movementPoints, Block[,] blockGrid, List<List<Block>> blockPaths)
     {
         List<Block> availableBlocks = new List<Block>();
         List<Block> accessedBlocks = new List<Block>() { startBlock };

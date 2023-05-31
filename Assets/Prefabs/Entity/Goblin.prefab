@@ -139,11 +139,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c741e746f2a9ea47b9b7c57d84d040b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementPoints: 2
+  <MovementPoints>k__BackingField: 2
   currentMovementPoints: 0
-  healthPoints: 10
+  <HealthPoints>k__BackingField: 10
   currentHealthPoints: 0
-  actionPoints: 2
+  <ActionPoints>k__BackingField: 2
   currentActionPoints: 0
-  actionList: []
-  playerControlled: 0
+  <ActionList>k__BackingField: []
+  <PlayerControlled>k__BackingField: 0

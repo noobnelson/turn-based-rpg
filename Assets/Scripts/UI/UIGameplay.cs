@@ -5,8 +5,6 @@ using UnityEngine.UI;
 
 public class UIGameplay : MonoBehaviour
 {
-    private GameManager gameManager;
-
     [SerializeField]
     private List<Button> actionButtons = new List<Button>();
     [SerializeField]
@@ -29,6 +27,8 @@ public class UIGameplay : MonoBehaviour
     private Text textActionPlayer;
     [SerializeField]
     private Text textActionOther;
+    
+    private GameManager gameManager;
 
     void Awake()
     {
@@ -37,9 +37,10 @@ public class UIGameplay : MonoBehaviour
 
     public void UpdateActions(List<Action> actions)
     {
-        for (int i = 0; i < actionButtons.Count; i++)
+        for (int i = 0; i < actions.Count; i++)
         {
             int x = i;
+            actionButtons[i].onClick.RemoveAllListeners();
             actionButtons[i].GetComponentInChildren<Text>().text = actions[i].name;
             actionButtons[i].onClick.AddListener(() => UpdateCurrentAction(actions[x]));
         }
@@ -72,11 +73,11 @@ public class UIGameplay : MonoBehaviour
 
     private void UpdateInfoPanel(Entity entity, Text name, Text health, Text movement, Text action)
     {
-        int endOfNameIndex = entity.gameObject.name.IndexOf("(");
-        name.text = entity.gameObject.name.Substring(0, endOfNameIndex);
-        health.text = "Health: " + entity.currentHealthPoints + "/" + entity.healthPoints;
-        movement.text = "Movement: " + entity.currentMovementPoints + "/" + entity.movementPoints;
-        action.text = "Action Points: " + entity.currentActionPoints + "/" + entity.actionPoints;
+        int endOfNameIndex = entity.gameObject.name.IndexOf("("); // when entity spawned ie. Knight(Clone)
+        name.text = entity.gameObject.name.Substring(0, endOfNameIndex); // remove the (Clone)
+        health.text = "Health: " + entity.currentHealthPoints + "/" + entity.HealthPoints;
+        movement.text = "Movement: " + entity.currentMovementPoints + "/" + entity.MovementPoints;
+        action.text = "Action Points: " + entity.currentActionPoints + "/" + entity.ActionPoints;
     }
 
     public void UpdateInfoPanelPlayer(Entity entity)

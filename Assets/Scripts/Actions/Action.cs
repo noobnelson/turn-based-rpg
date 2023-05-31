@@ -5,16 +5,22 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Action", menuName = "ScriptableObjects/Action", order = 1)]
 public class Action : ScriptableObject
 {
-    public string actionName;
-    public int castRange;
-    public int areaOfEffectRange;
-    public int actionCost;
-    public List<Effect> effectSelf = new List<Effect>();
-    public List<Effect> effectOther = new List<Effect>();
+    [field: SerializeField]
+    public string ActionName { get; private set; }
+    [field: SerializeField]
+    public int CastRange { get; private set; }
+    // [field: SerializeField]
+    // public int AreaOfEffectRange { get; private set; }
+    [field: SerializeField]
+    public int ActionCost { get; private set; }
+    [field: SerializeField]
+    public List<Effect> EffectSelf { get; private set; } = new List<Effect>();
+    [field: SerializeField]
+    public List<Effect> EffectOther { get; private set; } = new List<Effect>();
 
     public void PerformActionSelf(Entity entity)
     {
-        foreach (Effect effect in effectSelf)
+        foreach (Effect effect in EffectSelf)
         {
             effect.ApplyEffect(entity);
         }
@@ -22,7 +28,7 @@ public class Action : ScriptableObject
 
     public void PerformActionOther(Entity entity)
     {
-        foreach (Effect effect in effectOther)
+        foreach (Effect effect in EffectOther)
         {
             effect.ApplyEffect(entity);
         }

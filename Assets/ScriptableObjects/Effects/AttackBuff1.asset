@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e982ca7ceaf61ca459f9afbb70fc5bd9, type: 3}
   m_Name: AttackBuff1
   m_EditorClassIdentifier: 
-  value: 1
+  <Value>k__BackingField: 1

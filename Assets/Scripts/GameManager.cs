@@ -33,7 +33,6 @@ public class GameManager : MonoBehaviour
     private PlayerInput playerInput;
     private EntityManager entityManager;
     private UIManager uiManager;
-    private PathFinding pathFinding;
 
     void Awake()
     {
@@ -42,7 +41,6 @@ public class GameManager : MonoBehaviour
         playerInput = FindObjectOfType<PlayerInput>();
         entityManager = FindObjectOfType<EntityManager>();
         uiManager = FindObjectOfType<UIManager>();
-        pathFinding = new PathFinding();
     }
 
     void Start()
@@ -66,14 +64,14 @@ public class GameManager : MonoBehaviour
                 blockManager.DeactiveCells(blockManager.currentAvailableMovementBlocks);
                 blockManager.ClearAllLists();
                 blockManager.currentAvailableMovementBlocks =
-                    pathFinding.AvailableMoves(
+                    PathFinding.AvailableMoves(
                         currentEntityBlock, currentEntityTurn.currentMovementPoints, blockManager.BlockGrid, blockManager.currentMovementBlockPaths);
-                blockManager.HighlightAndActiveCells(blockManager.currentAvailableMovementBlocks, blockManager.colorMove);
+                blockManager.HighlightAndActiveCells(blockManager.currentAvailableMovementBlocks, blockManager.ColorMove);
                 currentAction = null;
 
-                if (currentEntityTurn.playerControlled)
+                if (currentEntityTurn.PlayerControlled)
                 {
-                    uiManager.UpdateActions(currentEntityTurn.actionList);
+                    uiManager.UpdateActions(currentEntityTurn.ActionList);
                     gameState = CurrentGameState.MoveStart;
                 }
                 else // skip computer turn for now
@@ -84,7 +82,6 @@ public class GameManager : MonoBehaviour
                 break;
 
             case CurrentGameState.MoveStart:
-
                 gameState = CurrentGameState.MoveInput;
 
                 break;
@@ -101,12 +98,12 @@ public class GameManager : MonoBehaviour
                         entityManager.MoveEntity(currentEntityTurn, hitBlock, blockPathToFollow);
                         blockManager.DeactiveCells(blockManager.currentAvailableMovementBlocks);
                         blockManager.currentHighlightBlock = null;
-
                         gameState = CurrentGameState.Moving;
+
                         break;
                     }
 
-                    blockManager.HighlightingCell(hitBlock, blockManager.currentAvailableMovementBlocks, blockManager.colorMove);
+                    blockManager.HighlightingCell(hitBlock, blockManager.currentAvailableMovementBlocks, blockManager.ColorMove);
 
                     // hover over an entity to see their stats
                     Entity lookAtEntityStats = entityManager.FindEntityAboveBlock(hitBlock);
@@ -122,13 +119,14 @@ public class GameManager : MonoBehaviour
                 }
                 else
                 {
-                    blockManager.RemoveHighlight(blockManager.colorMove);
+                    blockManager.RemoveHighlight(blockManager.ColorMove);
                 }
 
                 break;
 
             case CurrentGameState.Moving:
                 bool currentlyMoving = entityManager.CheckMoving();
+
                 if (!currentlyMoving)
                 {
                     gameState = CurrentGameState.TurnStart;
@@ -141,9 +139,8 @@ public class GameManager : MonoBehaviour
                 blockManager.DeactiveCells(blockManager.currentAvailableAttackBlocks);
                 blockManager.ClearAllLists();
                 blockManager.currentAvailableAttackBlocks =
-                    pathFinding.AvailablePositions(currentEntityBlock, currentAction.castRange, blockManager.BlockGrid);
-                blockManager.HighlightAndActiveCells(blockManager.currentAvailableAttackBlocks, blockManager.colorAttackRange);
-
+                    PathFinding.AvailablePositions(currentEntityBlock, currentAction.CastRange, blockManager.BlockGrid);
+                blockManager.HighlightAndActiveCells(blockManager.currentAvailableAttackBlocks, blockManager.ColorAttackRange);
                 gameState = CurrentGameState.ActionInput;
 
                 break;
@@ -152,15 +149,17 @@ public class GameManager : MonoBehaviour
                 if (mouseOverBlock)
                 {
                     Block hitBlock = blockHit.collider.GetComponentInParent<Block>();
-                    if (playerInput.MouseClick && currentEntityTurn.currentActionPoints >= currentAction.actionCost)
+
+                    if (playerInput.MouseClick && currentEntityTurn.currentActionPoints >= currentAction.ActionCost)
                     {
-                        currentEntityTurn.currentActionPoints -= currentAction.actionCost;
-                        if (currentAction.effectSelf.Count > 0)
+                        currentEntityTurn.currentActionPoints -= currentAction.ActionCost;
+
+                        if (currentAction.EffectSelf.Count > 0)
                         {
                             currentAction.PerformActionSelf(currentEntityTurn);
                         }
 
-                        if (currentAction.effectOther.Count > 0)
+                        if (currentAction.EffectOther.Count > 0)
                         {
                             Entity hitEntity = entityManager.FindEntityAboveBlock(hitBlock);
                             if (hitEntity)
@@ -173,14 +172,15 @@ public class GameManager : MonoBehaviour
                         blockManager.currentHighlightBlock = null;
                         currentAction = null;
                         gameState = CurrentGameState.PerformingAction;
+                        
                         break;
                     }
 
-                    blockManager.HighlightingCell(hitBlock, blockManager.currentAvailableAttackBlocks, blockManager.colorAttackRange);
+                    blockManager.HighlightingCell(hitBlock, blockManager.currentAvailableAttackBlocks, blockManager.ColorAttackRange);
                 }
                 else
                 {
-                    blockManager.RemoveHighlight(blockManager.colorAttackRange);
+                    blockManager.RemoveHighlight(blockManager.ColorAttackRange);
                 }
 
                 break;

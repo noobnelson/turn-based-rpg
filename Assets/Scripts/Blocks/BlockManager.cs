@@ -5,7 +5,6 @@ using UnityEngine;
 public class BlockManager : MonoBehaviour
 {
     public Block[,] BlockGrid { get; private set; }
-
     [HideInInspector]
     public Block currentHighlightBlock;
     [SerializeField]
@@ -13,11 +12,14 @@ public class BlockManager : MonoBehaviour
     public int BlockLayerMask { get; private set; }
     private int maxCost = 99;
 
-    public Color colorMove;
-    public Color colorPointer;
-    public Color colorAttackRange;
-    public Color colorAttackArea;
-    private Color previousColorOfBlock;
+    [field: SerializeField]
+    public Color ColorMove { get; private set; }
+    [field: SerializeField]
+    public Color ColorPointer { get; private set; }
+    [field: SerializeField]
+    public Color ColorAttackRange { get; private set; }
+    [field: SerializeField]
+    public Color ColorAttackArea { get; private set; }
 
     // NOTE: add these to different class?
     [HideInInspector]
@@ -29,13 +31,11 @@ public class BlockManager : MonoBehaviour
     [HideInInspector]
     public List<Block> currentAvailableAreaAttackBlocks = new List<Block>();
 
-    private PathFinding pathFinding;
     private FileManager fileManager;
 
     void Awake()
     {
         fileManager = FindObjectOfType<FileManager>();
-
         BlockLayerMask = 1 << blockLayer;
     }
 
@@ -44,7 +44,6 @@ public class BlockManager : MonoBehaviour
         // Use file to find dimensions ie. fileText array : ["000"]["000"]["000"] so 3x3 grid
         int xGridCount = fileManager.FileText[0].Length;
         int yGridCount = fileManager.FileText.Length;
-
         BlockGrid = new Block[xGridCount, yGridCount];
     }
 
@@ -96,7 +95,7 @@ public class BlockManager : MonoBehaviour
         if (currentHighlightBlock != block)
         {
             currentHighlightBlock = block;
-            HighlightAndActiveCell(block, colorPointer);
+            HighlightAndActiveCell(block, ColorPointer);
         }
     }
     public void RemoveHighlight(Color color)
@@ -145,6 +144,7 @@ public class BlockManager : MonoBehaviour
     {
         List<Block> pathWithBlock = new List<Block>();
         int blockPositionInList;
+
         foreach (List<Block> blockList in blockPaths)
         {
             if (blockList.Contains(block))
@@ -164,10 +164,12 @@ public class BlockManager : MonoBehaviour
     {
         RaycastHit hit;
         Block block = null;
+
         if (Physics.Raycast(entity.transform.position, Vector3.down, out hit, Mathf.Infinity))
         {
             block = hit.collider.GetComponentInParent<Block>();
         }
+        
         return block;
     }
 

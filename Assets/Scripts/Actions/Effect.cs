@@ -4,7 +4,8 @@ using UnityEngine;
 
 public abstract class Effect : ScriptableObject
 {
-    public int value;
+    [field: SerializeField]
+    public int Value { get; private set; }
 
     public abstract void ApplyEffect(Entity target);
 }

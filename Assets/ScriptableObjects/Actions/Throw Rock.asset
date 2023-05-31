@@ -12,10 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8705154fad622c246b8b0a81e0d02676, type: 3}
   m_Name: Throw Rock
   m_EditorClassIdentifier: 
-  actionName: Throw Rock
-  castRange: 2
-  actionRange: 0
-  actionCost: 5
-  effectSelf: []
-  effectOther:
-  - {fileID: 11400000, guid: 96c66138d372af3438481306345bac5e, type: 2}
+  <ActionName>k__BackingField: Throw Rock
+  <CastRange>k__BackingField: 3
+  <ActionCost>k__BackingField: 6
+  <EffectSelf>k__BackingField: []
+  <EffectOther>k__BackingField:
+  - {fileID: 11400000, guid: 152705319613eb143a7c6b8772c07917, type: 2}
