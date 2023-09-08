@@ -151,6 +151,10 @@ public class GameManager : MonoBehaviour
                     currentEntityBlock, 
                     currentAction.CastRange, 
                     blockManager.BlockGrid);
+                if (currentAction.ActionSelectSelf)
+                {
+                    blockManager.currentAvailableAttackBlocks.Add(currentEntityBlock);
+                }
                 blockManager.HighlightAndActiveCells(
                     blockManager.currentAvailableAttackBlocks, 
                     blockManager.ColorAttackRange);

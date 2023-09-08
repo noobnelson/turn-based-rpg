@@ -28,8 +28,7 @@ public static class PathFinding
     // WIP: looks for available blocks, ALL block costs = 1, doesnt need a path
     public static List<Block> AvailablePositions(Block startBlock, int maxCost, Block[,] blockGrid) 
     {
-        List<Block> availablePositions = new List<Block>();
-        availablePositions.Add(startBlock);
+        List<Block> availableBlocks = new List<Block>();
         List<Block> accessedBlocks = new List<Block>() { startBlock };
         List<PathAndCost> incompletePathsWithCost = new List<PathAndCost>() { 
             new PathAndCost(new List<Block>() { startBlock }, 0) };
@@ -37,7 +36,6 @@ public static class PathFinding
         while (incompletePathsWithCost.Count > 0)
         {
             List<PathAndCost> newPathsWithCostToAdd = new List<PathAndCost>();
-
             // go through each unfinished path
             foreach (PathAndCost pathWithCost in incompletePathsWithCost) 
             {
@@ -70,8 +68,7 @@ public static class PathFinding
 
                     List<Block> newPath = new List<Block>(pathWithCost.blockPath);
                     accessedBlocks.Add(nextBlock);
-                    int costToMoveToBlock = pathWithCost.cost + 1;
-
+                    int costToMoveToBlock = pathWithCost.cost + 1; // uniq
                     // end of path. don't add block to path
                     if (costToMoveToBlock > maxCost) 
                     {
@@ -80,8 +77,7 @@ public static class PathFinding
                     else if (costToMoveToBlock == maxCost) 
                     {
                         newPath.Add(nextBlock);
-
-                        availablePositions.Add(nextBlock);
+                        availableBlocks.Add(nextBlock);
                     }
                     // continue path
                     else 
@@ -90,27 +86,27 @@ public static class PathFinding
                         PathAndCost newPathWithCost = new PathAndCost(newPath, costToMoveToBlock);
                         newPathsWithCostToAdd.Add(newPathWithCost);
 
-                        availablePositions.Add(nextBlock);
+                        availableBlocks.Add(nextBlock);
                     }
                 }
             }
 
             incompletePathsWithCost = newPathsWithCostToAdd;
         }
-        return availablePositions;
+        return availableBlocks;
     }
 
     // WIP: looks for available movements, block costs = cost of block ie. wall = 99, needs paths
     public static List<Block> AvailableMoves(
         Block startBlock, 
-        int movementPoints, 
+        int maxCost, 
         Block[,] blockGrid, 
         List<List<Block>> blockPaths)
     {
         List<Block> availableBlocks = new List<Block>();
         List<Block> accessedBlocks = new List<Block>() { startBlock };
-        List<PathAndCost> incompletePathsWithCost =
-            new List<PathAndCost>() { new PathAndCost(new List<Block>() { startBlock }, 0) };
+        List<PathAndCost> incompletePathsWithCost = new List<PathAndCost>() { 
+            new PathAndCost(new List<Block>() { startBlock }, 0) };
 
         while (incompletePathsWithCost.Count > 0)
         {
@@ -129,8 +125,10 @@ public static class PathFinding
                     Vector2Int nextPathPosition = lastBlockPosition + position;
 
                     // check if the position is out of grid
-                    if (nextPathPosition.x < 0 || nextPathPosition.x >= blockGrid.GetLength(0)
-                        || nextPathPosition.y < 0 || nextPathPosition.y >= blockGrid.GetLength(1))
+                    if (nextPathPosition.x < 0 
+                        || nextPathPosition.x >= blockGrid.GetLength(0)
+                        || nextPathPosition.y < 0 
+                        || nextPathPosition.y >= blockGrid.GetLength(1))
                     {
                         continue;
                     }
@@ -145,18 +143,17 @@ public static class PathFinding
 
                     List<Block> newPath = new List<Block>(pathWithCost.blockPath);
                     accessedBlocks.Add(nextBlock);
-                    int costToMoveToBlock = pathWithCost.cost + nextBlock.currentMovementCost;
+                    int costToMoveToBlock = pathWithCost.cost + nextBlock.currentMovementCost; // uniq
                     // end of path. don't add block to path and remove starting block
-                    if (costToMoveToBlock > movementPoints) 
+                    if (costToMoveToBlock > maxCost) 
                     {
                         blockPaths.Add(newPath.GetRange(1, newPath.Count - 1));
                     }
                     // end of path. add block to path and remove starting block
-                    else if (costToMoveToBlock == movementPoints) 
+                    else if (costToMoveToBlock == maxCost) 
                     {
                         newPath.Add(nextBlock);
                         blockPaths.Add(newPath.GetRange(1, newPath.Count - 1));
-
                         availableBlocks.Add(nextBlock);
                     }
                     // continue path

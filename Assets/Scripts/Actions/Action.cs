@@ -9,6 +9,8 @@ public class Action : ScriptableObject
     public string ActionName { get; private set; }
     [field: SerializeField]
     public int CastRange { get; private set; }
+    [field: SerializeField]
+    public bool ActionSelectSelf { get; private set; }
     // [field: SerializeField]
     // public int AreaOfEffectRange { get; private set; }
     [field: SerializeField]

@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <ActionName>k__BackingField: Eat
   <CastRange>k__BackingField: 0
+  <ActionSelectSelf>k__BackingField: 1
   <ActionCost>k__BackingField: 5
   <EffectSelf>k__BackingField:
   - {fileID: 11400000, guid: 201bdda7fd5ebf44aa3522f11f004154, type: 2}
