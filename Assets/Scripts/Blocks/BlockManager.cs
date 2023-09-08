@@ -48,16 +48,29 @@ public class BlockManager : MonoBehaviour
     }
 
     // CELL 
+    public void ResetAllCells()
+    {
+        DeactiveCells(currentAvailableAttackBlocks);
+        DeactiveCells(currentAvailableMovementBlocks);
+        ClearAllLists();
+    }
+
     public void ChangeCellColor(Color color, Renderer renderer, MaterialPropertyBlock propBlock)
     {
-        renderer.GetPropertyBlock(propBlock); // get current value of material properties in renderer
-        propBlock.SetColor("_Color", color); // assign new value
-        renderer.SetPropertyBlock(propBlock); // apply edited value to renderer
+        // get current value of material properties in renderer
+        renderer.GetPropertyBlock(propBlock); 
+        // assign new value
+        propBlock.SetColor("_Color", color); 
+        // apply edited value to renderer
+        renderer.SetPropertyBlock(propBlock); 
     }
 
     public void HighlightCell(Block block, Color color)
     {
-        ChangeCellColor(color, block.cellWithMaterialPropertyBlock._renderer, block.cellWithMaterialPropertyBlock._propBlock);
+        ChangeCellColor(
+            color, 
+            block.cellWithMaterialPropertyBlock._renderer, 
+            block.cellWithMaterialPropertyBlock._propBlock);
     }
 
     public void HighlightAndActiveCells(List<Block> blockList, Color color)
@@ -79,7 +92,10 @@ public class BlockManager : MonoBehaviour
     public void HighlightAndActiveCell(Block block, Color color)
     {
         block.cell.SetActive(true);
-        ChangeCellColor(color, block.cellWithMaterialPropertyBlock._renderer, block.cellWithMaterialPropertyBlock._propBlock);
+        ChangeCellColor(
+            color, 
+            block.cellWithMaterialPropertyBlock._renderer, 
+            block.cellWithMaterialPropertyBlock._propBlock);
     }
 
     public void HighlightCells(List<Block> blocks, Color color)

@@ -17,15 +17,21 @@ public class EntityMove : MonoBehaviour
 
         foreach (Block block in path)
         {
-            Vector3 targetPosition = 
-                new Vector3(block.transform.position.x, entity.transform.position.y, block.transform.position.z);
+            Vector3 targetPosition = new Vector3(
+                block.transform.position.x, 
+                entity.transform.position.y, 
+                block.transform.position.z);
             Vector3 direction = targetPosition - entity.transform.position;
-            float distanceToTarget = Mathf.Abs(Vector3.Distance(entity.transform.position, targetPosition));
+            float distanceToTarget = Mathf.Abs(Vector3.Distance(
+                entity.transform.position, 
+                targetPosition));
             
             while (distanceToTarget > minDistanceToTarget)
             {
                 entity.transform.Translate(direction.normalized * Time.deltaTime * movementSpeed);
-                distanceToTarget = Mathf.Abs(Vector3.Distance(entity.transform.position, targetPosition));
+                distanceToTarget = Mathf.Abs(Vector3.Distance(
+                    entity.transform.position, 
+                    targetPosition));
                 yield return null;
             }
             

@@ -49,14 +49,16 @@ public class UIGameplay : MonoBehaviour
     public void UpdateCurrentAction(Action action)
     {
         // Clicking the same action that is currently selected = go back to moving player
-        if (gameManager.currentAction == action && gameManager.gameState == GameManager.CurrentGameState.ActionInput)
+        if (gameManager.currentAction == action 
+            && gameManager.gameState == GameManager.CurrentGameState.ActionInput)
         {
             gameManager.currentAction = null;
             gameManager.gameState = GameManager.CurrentGameState.TurnStart;
         }
         // Click new action to perform
-        else if (gameManager.currentAction != action &&
-            (gameManager.gameState == GameManager.CurrentGameState.MoveInput || gameManager.gameState == GameManager.CurrentGameState.ActionInput))
+        else if (gameManager.currentAction != action 
+            && (gameManager.gameState == GameManager.CurrentGameState.MoveInput 
+            || gameManager.gameState == GameManager.CurrentGameState.ActionInput))
         {
             gameManager.currentAction = action;
             gameManager.gameState = GameManager.CurrentGameState.ActionStart;
@@ -65,7 +67,8 @@ public class UIGameplay : MonoBehaviour
 
     public void ButtonEndTurn()
     {
-        if (gameManager.gameState == GameManager.CurrentGameState.MoveInput || gameManager.gameState == GameManager.CurrentGameState.ActionInput)
+        if (gameManager.gameState == GameManager.CurrentGameState.MoveInput 
+            || gameManager.gameState == GameManager.CurrentGameState.ActionInput)
         {
             gameManager.gameState = GameManager.CurrentGameState.TurnEnd;
         }
@@ -73,8 +76,10 @@ public class UIGameplay : MonoBehaviour
 
     private void UpdateInfoPanel(Entity entity, Text name, Text health, Text movement, Text action)
     {
-        int endOfNameIndex = entity.gameObject.name.IndexOf("("); // when entity spawned ie. Knight(Clone)
-        name.text = entity.gameObject.name.Substring(0, endOfNameIndex); // remove the (Clone)
+        // when entity spawned ie. Knight(Clone)
+        int endOfNameIndex = entity.gameObject.name.IndexOf("("); 
+        // remove the (Clone)
+        name.text = entity.gameObject.name.Substring(0, endOfNameIndex); 
         health.text = "Health: " + entity.currentHealthPoints + "/" + entity.HealthPoints;
         movement.text = "Movement: " + entity.currentMovementPoints + "/" + entity.MovementPoints;
         action.text = "Action Points: " + entity.currentActionPoints + "/" + entity.ActionPoints;
@@ -82,7 +87,11 @@ public class UIGameplay : MonoBehaviour
 
     public void UpdateInfoPanelPlayer(Entity entity)
     {
-        UpdateInfoPanel(entity, textNamePlayer, textHealthPlayer, textMovementPlayer, textActionPlayer);
+        UpdateInfoPanel(entity, 
+            textNamePlayer, 
+            textHealthPlayer, 
+            textMovementPlayer, 
+            textActionPlayer);
     }
 
     public void UpdateInfoPanelOther(Entity entity)

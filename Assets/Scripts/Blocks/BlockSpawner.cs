@@ -47,7 +47,10 @@ public class BlockSpawner : MonoBehaviour
         {
             foreach (char c in line)
             {
-                Block newBlock = Instantiate(block[c], new Vector3(xFileCount, 0, yFileCount), Quaternion.identity);
+                Block newBlock = Instantiate(
+                    block[c], 
+                    new Vector3(xFileCount, 0, yFileCount), 
+                    Quaternion.identity);
                 newBlock.transform.SetParent(parent.transform);
                 newBlock.name = newBlock.name + xFileCount + yFileCount;
                 newBlock.positionOnGrid = new Vector2Int(xFileCount, yFileCount);

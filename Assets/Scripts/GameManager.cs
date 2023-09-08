@@ -2,9 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// NOTES: 
-// try to avoid the use of 'null'
-
 public class GameManager : MonoBehaviour
 {
     public enum CurrentGameState
@@ -53,20 +50,27 @@ public class GameManager : MonoBehaviour
     {
         Ray ray = cam.ScreenPointToRay(playerInput.MousePos);
         RaycastHit blockHit;
-        bool mouseOverBlock = Physics.Raycast(ray.origin, ray.direction, out blockHit, Mathf.Infinity, blockManager.BlockLayerMask);
+        bool mouseOverBlock = Physics.Raycast(
+            ray.origin, 
+            ray.direction, 
+            out blockHit, 
+            Mathf.Infinity, 
+            blockManager.BlockLayerMask);
 
         switch (gameState)
         {
             case CurrentGameState.TurnStart:
                 uiManager.UpdateInfoPanelPlayer(currentEntityTurn);
                 currentEntityBlock = blockManager.FindBlockBelowEntity(currentEntityTurn);
-                blockManager.DeactiveCells(blockManager.currentAvailableAttackBlocks);
-                blockManager.DeactiveCells(blockManager.currentAvailableMovementBlocks);
-                blockManager.ClearAllLists();
-                blockManager.currentAvailableMovementBlocks =
-                    PathFinding.AvailableMoves(
-                        currentEntityBlock, currentEntityTurn.currentMovementPoints, blockManager.BlockGrid, blockManager.currentMovementBlockPaths);
-                blockManager.HighlightAndActiveCells(blockManager.currentAvailableMovementBlocks, blockManager.ColorMove);
+                blockManager.ResetAllCells();
+                blockManager.currentAvailableMovementBlocks = PathFinding.AvailableMoves(
+                    currentEntityBlock, 
+                    currentEntityTurn.currentMovementPoints, 
+                    blockManager.BlockGrid, 
+                    blockManager.currentMovementBlockPaths);
+                blockManager.HighlightAndActiveCells(
+                    blockManager.currentAvailableMovementBlocks, 
+                    blockManager.ColorMove);
                 currentAction = null;
 
                 if (currentEntityTurn.PlayerControlled)
@@ -74,7 +78,8 @@ public class GameManager : MonoBehaviour
                     uiManager.UpdateActions(currentEntityTurn.ActionList);
                     gameState = CurrentGameState.MoveStart;
                 }
-                else // skip computer turn for now
+                // skip computer turn for now
+                else 
                 {
                     gameState = CurrentGameState.TurnEnd;
                 }
@@ -90,9 +95,12 @@ public class GameManager : MonoBehaviour
                 if (mouseOverBlock)
                 {
                     Block hitBlock = blockHit.collider.GetComponentInParent<Block>();
-                    if (playerInput.MouseClick && blockManager.currentAvailableMovementBlocks.Contains(hitBlock)) // click to move
+                    if (playerInput.MouseClick 
+                        && blockManager.currentAvailableMovementBlocks.Contains(hitBlock))
                     {
-                        List<Block> blockPathToFollow = blockManager.FindPathWithBlock(blockManager.currentMovementBlockPaths, hitBlock);
+                        List<Block> blockPathToFollow = blockManager.FindPathWithBlock(
+                            blockManager.currentMovementBlockPaths, 
+                            hitBlock);
                         blockManager.BlockCostMax(hitBlock);
                         blockManager.BlockCostReset(currentEntityBlock);
                         entityManager.MoveEntity(currentEntityTurn, hitBlock, blockPathToFollow);
@@ -103,7 +111,10 @@ public class GameManager : MonoBehaviour
                         break;
                     }
 
-                    blockManager.HighlightingCell(hitBlock, blockManager.currentAvailableMovementBlocks, blockManager.ColorMove);
+                    blockManager.HighlightingCell(
+                        hitBlock, 
+                        blockManager.currentAvailableMovementBlocks, 
+                        blockManager.ColorMove);
 
                     // hover over an entity to see their stats
                     Entity lookAtEntityStats = entityManager.FindEntityAboveBlock(hitBlock);
@@ -135,12 +146,14 @@ public class GameManager : MonoBehaviour
                 break;
 
             case CurrentGameState.ActionStart:
-                blockManager.DeactiveCells(blockManager.currentAvailableMovementBlocks);
-                blockManager.DeactiveCells(blockManager.currentAvailableAttackBlocks);
-                blockManager.ClearAllLists();
-                blockManager.currentAvailableAttackBlocks =
-                    PathFinding.AvailablePositions(currentEntityBlock, currentAction.CastRange, blockManager.BlockGrid);
-                blockManager.HighlightAndActiveCells(blockManager.currentAvailableAttackBlocks, blockManager.ColorAttackRange);
+                blockManager.ResetAllCells();
+                blockManager.currentAvailableAttackBlocks = PathFinding.AvailablePositions(
+                    currentEntityBlock, 
+                    currentAction.CastRange, 
+                    blockManager.BlockGrid);
+                blockManager.HighlightAndActiveCells(
+                    blockManager.currentAvailableAttackBlocks, 
+                    blockManager.ColorAttackRange);
                 gameState = CurrentGameState.ActionInput;
 
                 break;
@@ -150,7 +163,8 @@ public class GameManager : MonoBehaviour
                 {
                     Block hitBlock = blockHit.collider.GetComponentInParent<Block>();
 
-                    if (playerInput.MouseClick && currentEntityTurn.currentActionPoints >= currentAction.ActionCost)
+                    if (playerInput.MouseClick 
+                        && currentEntityTurn.currentActionPoints >= currentAction.ActionCost)
                     {
                         currentEntityTurn.currentActionPoints -= currentAction.ActionCost;
 
@@ -176,7 +190,10 @@ public class GameManager : MonoBehaviour
                         break;
                     }
 
-                    blockManager.HighlightingCell(hitBlock, blockManager.currentAvailableAttackBlocks, blockManager.ColorAttackRange);
+                    blockManager.HighlightingCell(
+                        hitBlock, 
+                        blockManager.currentAvailableAttackBlocks, 
+                        blockManager.ColorAttackRange);
                 }
                 else
                 {
@@ -191,15 +208,12 @@ public class GameManager : MonoBehaviour
                 break;
 
             case CurrentGameState.TurnEnd:
-                blockManager.DeactiveCells(blockManager.currentAvailableMovementBlocks);
                 currentEntityTurn.ResetValues();
                 whichEntityTurn++;
-
                 if (whichEntityTurn == entityManager.currentEntities.Count)
                 {
                     whichEntityTurn = 0;
                 }
-
                 currentEntityTurn = entityManager.currentEntities[whichEntityTurn];
                 gameState = CurrentGameState.TurnStart;
 
