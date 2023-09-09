@@ -67,6 +67,7 @@ public class GameManager : MonoBehaviour
                     currentEntityBlock, 
                     currentEntityTurn.currentMovementPoints, 
                     blockManager.BlockGrid, 
+                    true,
                     blockManager.currentMovementBlockPaths);
                 blockManager.HighlightAndActiveCells(
                     blockManager.currentAvailableMovementBlocks, 
@@ -147,10 +148,11 @@ public class GameManager : MonoBehaviour
 
             case CurrentGameState.ActionStart:
                 blockManager.ResetAllCells();
-                blockManager.currentAvailableAttackBlocks = PathFinding.AvailablePositions(
+                blockManager.currentAvailableAttackBlocks = PathFinding.AvailableMoves(
                     currentEntityBlock, 
                     currentAction.CastRange, 
-                    blockManager.BlockGrid);
+                    blockManager.BlockGrid,
+                    false);
                 if (currentAction.ActionSelectSelf)
                 {
                     blockManager.currentAvailableAttackBlocks.Add(currentEntityBlock);
@@ -171,12 +173,10 @@ public class GameManager : MonoBehaviour
                         && currentEntityTurn.currentActionPoints >= currentAction.ActionCost)
                     {
                         currentEntityTurn.currentActionPoints -= currentAction.ActionCost;
-
                         if (currentAction.EffectSelf.Count > 0)
                         {
                             currentAction.PerformActionSelf(currentEntityTurn);
                         }
-
                         if (currentAction.EffectOther.Count > 0)
                         {
                             Entity hitEntity = entityManager.FindEntityAboveBlock(hitBlock);
