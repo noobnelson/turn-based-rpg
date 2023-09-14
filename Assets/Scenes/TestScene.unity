@@ -2210,6 +2210,7 @@ GameObject:
   - component: {fileID: 1692766146}
   - component: {fileID: 1692766144}
   - component: {fileID: 1692766147}
+  - component: {fileID: 1692766148}
   m_Layer: 0
   m_Name: Block Manager
   m_TagString: Untagged
@@ -2259,15 +2260,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72c706663bd638f438721b5822227406, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentHighlightBlock: {fileID: 0}
   blockLayer: 6
-  <ColorMove>k__BackingField: {r: 0.36854753, g: 0.7735849, b: 0.40614286, a: 1}
-  <ColorPointer>k__BackingField: {r: 0.934147, g: 1, b: 0.4764151, a: 1}
-  <ColorAttackRange>k__BackingField: {r: 1, g: 0.6080848, b: 0.5707547, a: 1}
-  <ColorAttackArea>k__BackingField: {r: 0.6415094, g: 0.11196155, b: 0.44625703, a: 1}
-  currentAvailableMovementBlocks: []
-  currentAvailableAttackBlocks: []
-  currentAvailableAreaAttackBlocks: []
+  availableMovementBlocks: []
+  availableAttackBlocks: []
+  availableAreaAttackBlocks: []
 --- !u!114 &1692766147
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2281,6 +2277,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapFile: {fileID: 4900000, guid: ceda91bacc7d8064a90be522cc4fb44b, type: 3}
+--- !u!114 &1692766148
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1692766143}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8d6a05488ed3a047a46feac1c606bca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <ColorMove>k__BackingField: {r: 0, g: 0.7653632, b: 1, a: 1}
+  <ColorPointer>k__BackingField: {r: 1, g: 0.96112573, b: 0, a: 1}
+  <ColorAttackRange>k__BackingField: {r: 1, g: 0, b: 0, a: 1}
+  <ColorAttackArea>k__BackingField: {r: 0.6981132, g: 0.6981132, b: 0.6981132, a: 1}
 --- !u!1 &1824037155
 GameObject:
   m_ObjectHideFlags: 0
@@ -2498,9 +2510,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   entities:
-  - {fileID: 4080624150858105258, guid: dc539c6d3f6f1a54bafbcaedb9bb8a27, type: 3}
-  - {fileID: 200898363679066392, guid: 32ee95f250f52ff4ea5d1cbe91ca596d, type: 3}
-  - {fileID: 4080624150858105258, guid: 5d3b4ec5441f29248b1c1fa37ce658fb, type: 3}
+  - {fileID: 6916943457046064644, guid: dc539c6d3f6f1a54bafbcaedb9bb8a27, type: 3}
+  - {fileID: 7934562793102325923, guid: 32ee95f250f52ff4ea5d1cbe91ca596d, type: 3}
+  - {fileID: 1285522767156146159, guid: 5d3b4ec5441f29248b1c1fa37ce658fb, type: 3}
   entitiesStartPosition:
   - {x: 6, y: 3}
   - {x: 3, y: 6}

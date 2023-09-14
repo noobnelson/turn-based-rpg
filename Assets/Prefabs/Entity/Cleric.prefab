@@ -106,6 +106,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1678482948457854352}
   - component: {fileID: 4080624150858105258}
+  - component: {fileID: 1285522767156146159}
   m_Layer: 0
   m_Name: Cleric
   m_TagString: Untagged
@@ -138,6 +139,30 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1c741e746f2a9ea47b9b7c57d84d040b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <MovementPoints>k__BackingField: 3
+  currentMovementPoints: 0
+  <HealthPoints>k__BackingField: 6
+  currentHealthPoints: 0
+  <ActionPoints>k__BackingField: 6
+  currentActionPoints: 0
+  <ActionList>k__BackingField:
+  - {fileID: 11400000, guid: 51fc5a5405e1ecc49a0a2f632c846476, type: 2}
+  - {fileID: 11400000, guid: eb0e3a50946d5744582b90fce74dcff1, type: 2}
+  - {fileID: 11400000, guid: 419a48d4e4b3c8a43bff689313d1e2a2, type: 2}
+  - {fileID: 11400000, guid: 8de510663696afe4ca5e9bcb08c1999a, type: 2}
+  <PlayerControlled>k__BackingField: 1
+--- !u!114 &1285522767156146159
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1678482948457854353}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0203519929154f44dae4c8c75cd9ffd1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   <MovementPoints>k__BackingField: 3

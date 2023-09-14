@@ -19,10 +19,10 @@ public static class PathFinding
         }
     }
 
-    public static readonly List<Vector2Int> neighbourPositions = new List<Vector2Int>() { 
-        Vector2Int.up, 
-        Vector2Int.right, 
-        Vector2Int.down, 
+    public static readonly List<Vector2Int> neighbourPositions = new List<Vector2Int>() {
+        Vector2Int.up,
+        Vector2Int.right,
+        Vector2Int.down,
         Vector2Int.left };
 
     // used to find where you can move or attack
@@ -31,9 +31,8 @@ public static class PathFinding
     // move also requires to update movement block paths
     // is the 'blockPath' optional parameter bad design? should i overload method instead?
     public static List<Block> AvailableMoves(
-        Block startBlock, 
-        int maxCost, 
-        Block[,] blockGrid, 
+        Block startBlock,
+        int maxCost,
         bool forMovement,
         List<List<Block>> blockPaths = default)
     {
@@ -43,32 +42,32 @@ public static class PathFinding
         }
         List<Block> availableBlocks = new List<Block>();
         List<Block> accessedBlocks = new List<Block>() { startBlock };
-        List<PathAndCost> incompletePathsWithCost = new List<PathAndCost>() { 
+        List<PathAndCost> incompletePathsWithCost = new List<PathAndCost>() {
             new PathAndCost(new List<Block>() { startBlock }, 0) };
 
         while (incompletePathsWithCost.Count > 0)
         {
             List<PathAndCost> newPathsWithCostToAdd = new List<PathAndCost>();
             // go through each unfinished path
-            foreach (PathAndCost pathWithCost in incompletePathsWithCost) 
+            foreach (PathAndCost pathWithCost in incompletePathsWithCost)
             {
                 int lastPositionInPath = pathWithCost.blockPath.Count - 1;
                 // check the 4 surroundings 
-                foreach (Vector2Int position in neighbourPositions) 
+                foreach (Vector2Int position in neighbourPositions)
                 {
                     Vector2Int lastBlockPosition = pathWithCost
                         .blockPath[lastPositionInPath]
                         .positionOnGrid;
                     Vector2Int nextPathPosition = lastBlockPosition + position;
                     // check if the position is out of grid
-                    if (nextPathPosition.x < 0 
-                        || nextPathPosition.x >= blockGrid.GetLength(0)
-                        || nextPathPosition.y < 0 
-                        || nextPathPosition.y >= blockGrid.GetLength(1))
+                    if (nextPathPosition.x < 0
+                        || nextPathPosition.x >= BlockManager.BlockGrid.GetLength(0)
+                        || nextPathPosition.y < 0
+                        || nextPathPosition.y >= BlockManager.BlockGrid.GetLength(1))
                     {
                         continue;
                     }
-                    Block nextBlock = blockGrid[nextPathPosition.x, nextPathPosition.y];
+                    Block nextBlock = BlockManager.BlockGrid[nextPathPosition.x, nextPathPosition.y];
                     // check if accessed block already
                     if (accessedBlocks.Contains(nextBlock))
                     {
@@ -87,19 +86,19 @@ public static class PathFinding
                         costToMoveToBlock++;
                     }
                     // end of path. don't add block to path and remove starting block
-                    if (costToMoveToBlock > maxCost) 
+                    if (costToMoveToBlock > maxCost)
                     {
                         blockPaths.Add(newPath.GetRange(1, newPath.Count - 1));
                     }
                     // end of path. add block to path and remove starting block
-                    else if (costToMoveToBlock == maxCost) 
+                    else if (costToMoveToBlock == maxCost)
                     {
                         newPath.Add(nextBlock);
                         blockPaths.Add(newPath.GetRange(1, newPath.Count - 1));
                         availableBlocks.Add(nextBlock);
                     }
                     // continue path
-                    else 
+                    else
                     {
                         newPath.Add(nextBlock);
                         PathAndCost newPathWithCost = new PathAndCost(newPath, costToMoveToBlock);
@@ -114,5 +113,23 @@ public static class PathFinding
         }
 
         return availableBlocks;
+    }
+
+    public static List<Block> FindPathWithBlock(List<List<Block>> blockPaths, Block block)
+    {
+        List<Block> pathWithBlock = new List<Block>();
+        int blockPositionInList;
+
+        foreach (List<Block> blockList in blockPaths)
+        {
+            if (blockList.Contains(block))
+            {
+                blockPositionInList = blockList.IndexOf(block);
+                pathWithBlock = blockList.GetRange(0, blockPositionInList + 1);
+                return pathWithBlock;
+            }
+        }
+
+        return pathWithBlock;
     }
 }

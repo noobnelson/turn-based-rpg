@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Entity : MonoBehaviour
+public class Entity : MonoBehaviour
 {
     [field: SerializeField]
     public int MovementPoints { get; private set; }
@@ -22,7 +22,7 @@ public abstract class Entity : MonoBehaviour
     [field: SerializeField]
     public bool PlayerControlled { get; private set; }
 
-    virtual protected void Awake()
+    public void Awake()
     {
         currentMovementPoints = MovementPoints;
         currentHealthPoints = HealthPoints;

@@ -105,6 +105,7 @@ GameObject:
   m_Component:
   - component: {fileID: 200898363679066393}
   - component: {fileID: 200898363679066392}
+  - component: {fileID: 7934562793102325923}
   m_Layer: 0
   m_Name: Goblin
   m_TagString: Untagged
@@ -137,6 +138,26 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1c741e746f2a9ea47b9b7c57d84d040b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <MovementPoints>k__BackingField: 2
+  currentMovementPoints: 0
+  <HealthPoints>k__BackingField: 10
+  currentHealthPoints: 0
+  <ActionPoints>k__BackingField: 2
+  currentActionPoints: 0
+  <ActionList>k__BackingField: []
+  <PlayerControlled>k__BackingField: 0
+--- !u!114 &7934562793102325923
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 200898363679066374}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0203519929154f44dae4c8c75cd9ffd1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   <MovementPoints>k__BackingField: 2

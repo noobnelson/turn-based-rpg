@@ -4,81 +4,35 @@ using UnityEngine;
 
 public class BlockManager : MonoBehaviour
 {
-    public Block[,] BlockGrid { get; private set; }
-    [HideInInspector]
-    public Block currentHighlightBlock;
+    public static Block[,] BlockGrid;
+    
     [SerializeField]
     private int blockLayer = 6;
     public int BlockLayerMask { get; private set; }
-    private int maxCost = 99;
+    public int MaxCost { get; private set; }
 
-    [field: SerializeField]
-    public Color ColorMove { get; private set; }
-    [field: SerializeField]
-    public Color ColorPointer { get; private set; }
-    [field: SerializeField]
-    public Color ColorAttackRange { get; private set; }
-    [field: SerializeField]
-    public Color ColorAttackArea { get; private set; }
-
-    // NOTE: add these to different class?
     [HideInInspector]
-    public List<List<Block>> currentMovementBlockPaths = new List<List<Block>>();
+    public List<List<Block>> movementBlockPaths = new List<List<Block>>();
     [HideInInspector]
-    public List<Block> currentAvailableMovementBlocks = new List<Block>();
+    public List<Block> availableMovementBlocks = new List<Block>();
     [HideInInspector]
-    public List<Block> currentAvailableAttackBlocks = new List<Block>();
+    public List<Block> availableAttackBlocks = new List<Block>();
     [HideInInspector]
-    public List<Block> currentAvailableAreaAttackBlocks = new List<Block>();
-
-    private FileManager fileManager;
+    public List<Block> availableAreaAttackBlocks = new List<Block>();
 
     void Awake()
     {
-        fileManager = FindObjectOfType<FileManager>();
         BlockLayerMask = 1 << blockLayer;
     }
 
-    void Start()
-    {
-        // Use file to find dimensions ie. fileText array : ["000"]["000"]["000"] so 3x3 grid
-        int xGridCount = fileManager.FileText[0].Length;
-        int yGridCount = fileManager.FileText.Length;
-        BlockGrid = new Block[xGridCount, yGridCount];
-    }
-
-    // CELL 
     public void ResetAllCells()
     {
-        DeactiveCells(currentAvailableAttackBlocks);
-        DeactiveCells(currentAvailableMovementBlocks);
-        ClearAllLists();
-    }
-
-    public void ChangeCellColor(Color color, Renderer renderer, MaterialPropertyBlock propBlock)
-    {
-        // get current value of material properties in renderer
-        renderer.GetPropertyBlock(propBlock); 
-        // assign new value
-        propBlock.SetColor("_Color", color); 
-        // apply edited value to renderer
-        renderer.SetPropertyBlock(propBlock); 
-    }
-
-    public void HighlightCell(Block block, Color color)
-    {
-        ChangeCellColor(
-            color, 
-            block.cellWithMaterialPropertyBlock._renderer, 
-            block.cellWithMaterialPropertyBlock._propBlock);
-    }
-
-    public void HighlightAndActiveCells(List<Block> blockList, Color color)
-    {
-        foreach (Block block in blockList)
-        {
-            HighlightAndActiveCell(block, color);
-        }
+        DeactiveCells(availableAttackBlocks);
+        DeactiveCells(availableMovementBlocks);
+        movementBlockPaths.Clear();
+        availableMovementBlocks.Clear();
+        availableAttackBlocks.Clear();
+        availableAreaAttackBlocks.Clear();
     }
 
     public void DeactiveCells(List<Block> blockList)
@@ -89,93 +43,6 @@ public class BlockManager : MonoBehaviour
         }
     }
 
-    public void HighlightAndActiveCell(Block block, Color color)
-    {
-        block.cell.SetActive(true);
-        ChangeCellColor(
-            color, 
-            block.cellWithMaterialPropertyBlock._renderer, 
-            block.cellWithMaterialPropertyBlock._propBlock);
-    }
-
-    public void HighlightCells(List<Block> blocks, Color color)
-    {
-        foreach (Block block in blocks)
-        {
-            HighlightAndActiveCell(block, color);
-        }
-    }
-
-    public void PointerHighlight(Block block)
-    {
-        if (currentHighlightBlock != block)
-        {
-            currentHighlightBlock = block;
-            HighlightAndActiveCell(block, ColorPointer);
-        }
-    }
-    public void RemoveHighlight(Color color)
-    {
-        if (currentHighlightBlock)
-        {
-            HighlightAndActiveCell(currentHighlightBlock, color);
-            currentHighlightBlock = null;
-        }
-    }
-
-    public void HighlightingCell(Block hitBlock, List<Block> blockList, Color color)
-    {
-        if (blockList.Contains(hitBlock)) // highlight hover spot
-        {
-            if (currentHighlightBlock) // highlight block exists
-            {
-                if (currentHighlightBlock != hitBlock)
-                {
-                    HighlightAndActiveCell(currentHighlightBlock, color);
-                    PointerHighlight(hitBlock);
-                }
-            }
-            else // no highlight block exists
-            {
-                PointerHighlight(hitBlock);
-            }
-        }
-        else // we're interacting with an unavailable cell
-        {
-            RemoveHighlight(color);
-        }
-    }
-    //-----------------------
-
-    // PATHS
-    public void ClearAllLists()
-    {
-        currentMovementBlockPaths.Clear();
-        currentAvailableMovementBlocks.Clear();
-        currentAvailableAttackBlocks.Clear();
-        currentAvailableAreaAttackBlocks.Clear();
-    }
-
-    public List<Block> FindPathWithBlock(List<List<Block>> blockPaths, Block block)
-    {
-        List<Block> pathWithBlock = new List<Block>();
-        int blockPositionInList;
-
-        foreach (List<Block> blockList in blockPaths)
-        {
-            if (blockList.Contains(block))
-            {
-                blockPositionInList = blockList.IndexOf(block);
-                pathWithBlock = blockList.GetRange(0, blockPositionInList + 1);
-                return pathWithBlock;
-            }
-        }
-
-        return pathWithBlock;
-    }
-    //------------------------
-
-    // BLOCKS
     public Block FindBlockBelowEntity(Entity entity)
     {
         RaycastHit hit;
@@ -188,16 +55,4 @@ public class BlockManager : MonoBehaviour
         
         return block;
     }
-
-    public void BlockCostMax(Block block)
-    {
-        block.currentMovementCost = maxCost;
-    }
-
-    public void BlockCostReset(Block block)
-    {
-        block.currentMovementCost = block.MovementCost;
-    }
-
-    //----------------------------------------
 }

@@ -16,45 +16,35 @@ public class BlockSpawner : MonoBehaviour
     private List<Block> blockTypes = new List<Block>();
     private Dictionary<char, Block> block = new Dictionary<char, Block>();
 
-    private BlockManager blockManager;
     private FileManager fileManager;
 
     void Awake()
     {
-        blockManager = FindObjectOfType<BlockManager>();
         fileManager = FindObjectOfType<FileManager>();
-    }
 
-    void Start()
-    {
-        // Fill the block dictionary 
         for (int i = 0; i < blockTypes.Count; i++)
         {
             block.Add(charForBlockTypes[i], blockTypes[i]);
         }
+        
+        int xGridCount = fileManager.FileText[0].Length;
+        int yGridCount = fileManager.FileText.Length;
+        BlockManager.BlockGrid = new Block[xGridCount, yGridCount];
 
-        CreateMap(blockManager.BlockGrid, fileManager.FileText);
-    }
-
-    public void CreateMap(Block[,] grid, string[] mapText)
-    {
-        GameObject parent = new GameObject("MapParent");
-
+        // Create the map
+        GameObject mapParent = new GameObject("MapParent");
         int xFileCount = 0;
         int yFileCount = 0;
-
-        foreach (string line in mapText)
+        foreach (string line in fileManager.FileText)
         {
             foreach (char c in line)
             {
-                Block newBlock = Instantiate(
-                    block[c], 
-                    new Vector3(xFileCount, 0, yFileCount), 
-                    Quaternion.identity);
-                newBlock.transform.SetParent(parent.transform);
+                Vector3 blockPosition = new Vector3(xFileCount, 0, yFileCount);
+                Block newBlock = Instantiate(block[c], blockPosition, Quaternion.identity);
+                newBlock.transform.SetParent(mapParent.transform);
                 newBlock.name = newBlock.name + xFileCount + yFileCount;
                 newBlock.positionOnGrid = new Vector2Int(xFileCount, yFileCount);
-                grid[xFileCount, yFileCount] = newBlock;
+                BlockManager.BlockGrid[xFileCount, yFileCount] = newBlock;
                 xFileCount++;
             }
             xFileCount = 0;

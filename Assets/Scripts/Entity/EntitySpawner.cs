@@ -11,12 +11,10 @@ public class EntitySpawner : MonoBehaviour
     [SerializeField]
     private Vector3 yPositionOffset = new Vector3(0, 0.5f, 0);
 
-    private BlockManager blockManager;
     private EntityManager entityManager;
 
     void Awake()
     {
-        blockManager = FindObjectOfType<BlockManager>();
         entityManager = FindObjectOfType<EntityManager>();
     }
 
@@ -26,10 +24,11 @@ public class EntitySpawner : MonoBehaviour
         {
             int x = entitiesStartPosition[i].x;
             int y = entitiesStartPosition[i].y;
-            Block selectedBlock = blockManager.BlockGrid[x, y];
+            Block selectedBlock = BlockManager.BlockGrid[x, y];
             Vector3 entityPosition = selectedBlock.transform.position + yPositionOffset;
             Entity entity = Instantiate(entities[i], entityPosition, Quaternion.identity);
-            blockManager.BlockCostMax(selectedBlock);
+            selectedBlock.currentMovementCost = 99;
+            //blockManager.BlockCostMax(selectedBlock);
             entityManager.currentEntities.Add(entity);
         }
     }
