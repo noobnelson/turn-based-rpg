@@ -9,7 +9,7 @@ public class BlockManager : MonoBehaviour
     [SerializeField]
     private int blockLayer = 6;
     public int BlockLayerMask { get; private set; }
-    public int MaxCost { get; private set; }
+    public int MaxCost { get; private set; } = 99;
 
     [HideInInspector]
     public List<List<Block>> movementBlockPaths = new List<List<Block>>();

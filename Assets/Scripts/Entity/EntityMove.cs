@@ -13,7 +13,7 @@ public class EntityMove : MonoBehaviour
     public IEnumerator MoveEntity(Entity entity, Block newBlock, List<Block> path)
     {
         Moving = true;
-        entity.currentMovementPoints -= path.Count;
+        int moveCost = 0;
 
         foreach (Block block in path)
         {
@@ -36,9 +36,11 @@ public class EntityMove : MonoBehaviour
             }
             
             entity.transform.position = targetPosition;
+            moveCost += block.MovementCost;
         }
 
         Moving = false;
+        entity.currentMovementPoints -= moveCost;
         yield return null;
     }
 }

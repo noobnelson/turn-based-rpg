@@ -60,7 +60,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 2c48a7a949e259d45b1b0334616c9df7, type: 2}
+  - {fileID: 2100000, guid: f4d85a9f65c285a4abdc04926dc1f373, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -106,7 +106,7 @@ GameObject:
   - component: {fileID: 8097086924525019854}
   - component: {fileID: -7529069261546046941}
   m_Layer: 6
-  m_Name: Block
+  m_Name: BlockMud
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -141,8 +141,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   positionOnGrid: {x: 0, y: 0}
-  movementCost: 1
+  <MovementCost>k__BackingField: 2
   currentMovementCost: 0
+  <BlockTextFileChar>k__BackingField: 50
   cellWithMaterialPropertyBlock: {fileID: 0}
   cell: {fileID: 0}
 --- !u!1 &8097086925037881727

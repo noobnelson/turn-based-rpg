@@ -7,11 +7,6 @@ using System;
 
 public class BlockSpawner : MonoBehaviour
 {
-    // Since Unity doesn't show dictionaries in Inspector, create own Key,Value
-    // KEY
-    [SerializeField]
-    private List<char> charForBlockTypes = new List<char>();
-    // VALUE
     [SerializeField]
     private List<Block> blockTypes = new List<Block>();
     private Dictionary<char, Block> block = new Dictionary<char, Block>();
@@ -24,7 +19,7 @@ public class BlockSpawner : MonoBehaviour
 
         for (int i = 0; i < blockTypes.Count; i++)
         {
-            block.Add(charForBlockTypes[i], blockTypes[i]);
+            block.Add(blockTypes[i].BlockTextFileChar, blockTypes[i]);
         }
         
         int xGridCount = fileManager.FileText[0].Length;

@@ -2,16 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Block : MonoBehaviour
+public class Block : MonoBehaviour
 {
     [HideInInspector]
     public Vector2Int positionOnGrid = new Vector2Int();
-    [SerializeField]
-    private int movementCost;
-    public int MovementCost { get{ return movementCost; } private set{ movementCost = value; } }
+    [field: SerializeField]
+    public int MovementCost { get; private set; }
     [HideInInspector]
     public int currentMovementCost;
-    
+    [field: SerializeField]
+    public char BlockTextFileChar { get; private set; }
+
     public CellWithMaterialPropertyBlock cellWithMaterialPropertyBlock;
     public GameObject cell;
 

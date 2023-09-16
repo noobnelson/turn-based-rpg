@@ -7,6 +7,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -7529069261546046941, guid: 0e36e050b6a13d044ab7ead4979029aa, type: 3}
+      propertyPath: blockTextFileChar
+      value: 49
+      objectReference: {fileID: 0}
+    - target: {fileID: -7529069261546046941, guid: 0e36e050b6a13d044ab7ead4979029aa, type: 3}
+      propertyPath: <MovementCost>k__BackingField
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -7529069261546046941, guid: 0e36e050b6a13d044ab7ead4979029aa, type: 3}
+      propertyPath: <BlockTextFileChar>k__BackingField
+      value: 49
+      objectReference: {fileID: 0}
     - target: {fileID: 8097086923854966201, guid: 0e36e050b6a13d044ab7ead4979029aa, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 

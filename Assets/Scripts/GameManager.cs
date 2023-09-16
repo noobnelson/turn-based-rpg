@@ -14,7 +14,6 @@ public class GameManager : MonoBehaviour
         PerformingAction,
         TurnEnd
     }
-
     [HideInInspector]
     public CurrentGameState gameState;
 
@@ -68,7 +67,6 @@ public class GameManager : MonoBehaviour
                 blockManager.availableMovementBlocks = PathFinding.AvailableMoves(
                     currentEntityBlock,
                     CurrentEntitySelected.currentMovementPoints,
-                    true,
                     blockManager.movementBlockPaths);
                 cellColorChanger.HighlightAndActiveCells(
                     blockManager.availableMovementBlocks,
@@ -143,10 +141,9 @@ public class GameManager : MonoBehaviour
 
             case CurrentGameState.ActionStart:
                 blockManager.ResetAllCells();
-                blockManager.availableAttackBlocks = PathFinding.AvailableMoves(
+                blockManager.availableAttackBlocks = PathFinding.AvailableAttackCells(
                     currentEntityBlock,
-                    currentAction.CastRange,
-                    false);
+                    currentAction.CastRange);
                 if (currentAction.ActionSelectSelf)
                 {
                     blockManager.availableAttackBlocks.Add(currentEntityBlock);

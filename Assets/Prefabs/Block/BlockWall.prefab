@@ -7,6 +7,22 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -7529069261546046941, guid: 0e36e050b6a13d044ab7ead4979029aa, type: 3}
+      propertyPath: movementCost
+      value: 99
+      objectReference: {fileID: 0}
+    - target: {fileID: -7529069261546046941, guid: 0e36e050b6a13d044ab7ead4979029aa, type: 3}
+      propertyPath: blockTextFileChar
+      value: 48
+      objectReference: {fileID: 0}
+    - target: {fileID: -7529069261546046941, guid: 0e36e050b6a13d044ab7ead4979029aa, type: 3}
+      propertyPath: <MovementCost>k__BackingField
+      value: 99
+      objectReference: {fileID: 0}
+    - target: {fileID: -7529069261546046941, guid: 0e36e050b6a13d044ab7ead4979029aa, type: 3}
+      propertyPath: <BlockTextFileChar>k__BackingField
+      value: 48
+      objectReference: {fileID: 0}
     - target: {fileID: -6887998437070174816, guid: 0e36e050b6a13d044ab7ead4979029aa, type: 3}
       propertyPath: movementCost
       value: 99
