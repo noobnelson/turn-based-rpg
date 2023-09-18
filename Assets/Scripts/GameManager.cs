@@ -28,14 +28,18 @@ public class GameManager : MonoBehaviour
     private BlockCellColorChanger cellColorChanger;
     private PlayerInput playerInput;
     private EntityManager entityManager;
-    private UIManager uiManager;
+    private EntityMove entityMove;
+    private UIMenus uiMenus;
+    private UIGameplay uiGameplay;
 
     void Awake()
     {
         blockManager = FindObjectOfType<BlockManager>();
         playerInput = FindObjectOfType<PlayerInput>();
         entityManager = FindObjectOfType<EntityManager>();
-        uiManager = FindObjectOfType<UIManager>();
+        entityMove = FindObjectOfType<EntityMove>();
+        uiMenus = FindObjectOfType<UIMenus>();
+        uiGameplay = FindObjectOfType<UIGameplay>();
         cellColorChanger = FindObjectOfType<BlockCellColorChanger>();
 
         cam = Camera.main;
@@ -49,6 +53,11 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
+        if (playerInput.PauseKey)
+        {
+            uiMenus.PauseMenu();
+        }
+
         Ray ray = cam.ScreenPointToRay(playerInput.MousePos);
         RaycastHit blockHit;
         bool mouseOverBlock = Physics.Raycast(
@@ -61,7 +70,7 @@ public class GameManager : MonoBehaviour
         switch (gameState)
         {
             case CurrentGameState.TurnStart:
-                uiManager.UpdateInfoPanelPlayer(CurrentEntitySelected);
+                uiGameplay.UpdateInfoPanelPlayer(CurrentEntitySelected);
                 currentEntityBlock = blockManager.FindBlockBelowEntity(CurrentEntitySelected);
                 blockManager.ResetAllCells();
                 blockManager.availableMovementBlocks = PathFinding.AvailableMoves(
@@ -75,7 +84,7 @@ public class GameManager : MonoBehaviour
 
                 if (CurrentEntitySelected.PlayerControlled)
                 {
-                    uiManager.UpdateActions(CurrentEntitySelected.ActionList);
+                    uiGameplay.UpdateActions(CurrentEntitySelected.ActionList);
                     gameState = CurrentGameState.MoveInput;
                 }
                 // skip computer turn for now
@@ -95,7 +104,7 @@ public class GameManager : MonoBehaviour
                         blockManager.availableMovementBlocks,
                         cellColorChanger.ColorMove);
 
-                    if (playerInput.MouseClick
+                    if (playerInput.MouseClickLeft
                         && blockManager.availableMovementBlocks.Contains(hitBlock))
                     {
                         List<Block> blockPathToFollow = PathFinding.FindPathWithBlock(
@@ -103,7 +112,11 @@ public class GameManager : MonoBehaviour
                             hitBlock);
                         hitBlock.currentMovementCost = blockManager.MaxCost;
                         currentEntityBlock.currentMovementCost = currentEntityBlock.MovementCost;
-                        entityManager.MoveEntity(CurrentEntitySelected, hitBlock, blockPathToFollow);
+                        //entityManager.MoveEntity(CurrentEntitySelected, hitBlock, blockPathToFollow);
+                        StartCoroutine(entityMove.MoveEntity(
+                            CurrentEntitySelected, 
+                            hitBlock, 
+                            blockPathToFollow));
                         blockManager.DeactiveCells(blockManager.availableMovementBlocks);
                         cellColorChanger.RemoveHighlight();
                         gameState = CurrentGameState.Moving;
@@ -115,12 +128,12 @@ public class GameManager : MonoBehaviour
                     Entity lookAtEntityStats = entityManager.FindEntityAboveBlock(hitBlock);
                     if (lookAtEntityStats && lookAtEntityStats != CurrentEntitySelected)
                     {
-                        uiManager.UpdateInfoPanelOther(lookAtEntityStats);
-                        uiManager.ToggleInfoPanelOther(true);
+                        uiGameplay.UpdateInfoPanelOther(lookAtEntityStats);
+                        uiGameplay.ToggleInfoPanelOther(true);
                     }
                     else
                     {
-                        uiManager.ToggleInfoPanelOther(false);
+                        uiGameplay.ToggleInfoPanelOther(false);
                     }
                 }
                 else
@@ -131,8 +144,7 @@ public class GameManager : MonoBehaviour
                 break;
 
             case CurrentGameState.Moving:
-                bool currentlyMoving = entityManager.CheckMoving();
-                if (!currentlyMoving)
+                if (!entityMove.Moving)
                 {
                     gameState = CurrentGameState.TurnStart;
                 }
@@ -160,7 +172,7 @@ public class GameManager : MonoBehaviour
                 {
                     Block hitBlock = blockHit.collider.GetComponentInParent<Block>();
 
-                    if (playerInput.MouseClick
+                    if (playerInput.MouseClickLeft
                         && CurrentEntitySelected.currentActionPoints >= currentAction.ActionCost)
                     {
                         CurrentEntitySelected.currentActionPoints -= currentAction.ActionCost;
@@ -193,6 +205,12 @@ public class GameManager : MonoBehaviour
                 else
                 {
                     cellColorChanger.RemoveHighlight(cellColorChanger.ColorAttackRange);
+                }
+
+                if (playerInput.MouseClickRight)
+                {
+                    currentAction = null;
+                    gameState = CurrentGameState.TurnStart;
                 }
 
                 break;

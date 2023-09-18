@@ -7,23 +7,6 @@ public class EntityManager : MonoBehaviour
     [HideInInspector]
     public List<Entity> currentEntities = new List<Entity>();
 
-    private EntityMove entityMove;
-
-    void Awake()
-    {
-        entityMove = FindObjectOfType<EntityMove>();
-    }
-
-    public void MoveEntity(Entity entity, Block newBlock, List<Block> path)
-    {
-        StartCoroutine(entityMove.MoveEntity(entity, newBlock, path));
-    }
-
-    public bool CheckMoving()
-    {
-        return entityMove.Moving;
-    }
-        
     public Entity FindEntityAboveBlock(Block block)
     {
         RaycastHit hit;

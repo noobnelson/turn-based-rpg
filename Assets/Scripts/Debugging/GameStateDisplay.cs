@@ -21,9 +21,6 @@ public class GameStateDisplay : MonoBehaviour
 
     void Update()
     {
-        // Entity currentEntity = gameManager.CurrentEntitySelected;
-        // int endOfNameIndex = currentEntity.gameObject.name.IndexOf("(");
-
         displayText.text = 
             "Entity Turn: " + gameManager.CurrentEntitySelected.gameObject.name
             + "\nGame State: " + gameManager.gameState
