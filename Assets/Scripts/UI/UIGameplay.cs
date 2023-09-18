@@ -27,12 +27,31 @@ public class UIGameplay : MonoBehaviour
     private Text textActionPlayer;
     [SerializeField]
     private Text textActionOther;
-    
+
+    [SerializeField]
+    private Toggle gridNumbersToggle;
+    [SerializeField]
+    private Toggle gridLinesToggle;
+    [SerializeField]
+    private Transform gridNumbers;
+    [SerializeField]
+    private Transform gridLines;
+
     private GameManager gameManager;
 
     void Awake()
     {
         gameManager = FindObjectOfType<GameManager>();
+    }
+
+    public void ToggleGridNumbers()
+    {
+        gridNumbers.gameObject.SetActive(!gridNumbers.gameObject.activeInHierarchy);
+    }
+
+    public void ToggleGridLines()
+    {
+        gridLines.gameObject.SetActive(!gridLines.gameObject.activeInHierarchy);
     }
 
     public void UpdateActions(List<Action> actions)
@@ -49,15 +68,15 @@ public class UIGameplay : MonoBehaviour
     public void UpdateCurrentAction(Action action)
     {
         // Clicking the same action that is currently selected = go back to moving player
-        if (gameManager.currentAction == action 
+        if (gameManager.currentAction == action
             && gameManager.gameState == GameManager.CurrentGameState.ActionInput)
         {
             gameManager.currentAction = null;
             gameManager.gameState = GameManager.CurrentGameState.TurnStart;
         }
         // Click new action to perform
-        else if (gameManager.currentAction != action 
-            && (gameManager.gameState == GameManager.CurrentGameState.MoveInput 
+        else if (gameManager.currentAction != action
+            && (gameManager.gameState == GameManager.CurrentGameState.MoveInput
             || gameManager.gameState == GameManager.CurrentGameState.ActionInput))
         {
             gameManager.currentAction = action;
@@ -67,7 +86,7 @@ public class UIGameplay : MonoBehaviour
 
     public void ButtonEndTurn()
     {
-        if (gameManager.gameState == GameManager.CurrentGameState.MoveInput 
+        if (gameManager.gameState == GameManager.CurrentGameState.MoveInput
             || gameManager.gameState == GameManager.CurrentGameState.ActionInput)
         {
             gameManager.gameState = GameManager.CurrentGameState.TurnEnd;
@@ -77,9 +96,9 @@ public class UIGameplay : MonoBehaviour
     private void UpdateInfoPanel(Entity entity, Text name, Text health, Text movement, Text action)
     {
         // when entity spawned ie. Knight(Clone)
-        int endOfNameIndex = entity.gameObject.name.IndexOf("("); 
+        int endOfNameIndex = entity.gameObject.name.IndexOf("(");
         // remove the (Clone)
-        name.text = entity.gameObject.name.Substring(0, endOfNameIndex); 
+        name.text = entity.gameObject.name.Substring(0, endOfNameIndex);
         health.text = "Health: " + entity.currentHealthPoints + "/" + entity.HealthPoints;
         movement.text = "Movement: " + entity.currentMovementPoints + "/" + entity.MovementPoints;
         action.text = "Action Points: " + entity.currentActionPoints + "/" + entity.ActionPoints;
@@ -87,10 +106,10 @@ public class UIGameplay : MonoBehaviour
 
     public void UpdateInfoPanelPlayer(Entity entity)
     {
-        UpdateInfoPanel(entity, 
-            textNamePlayer, 
-            textHealthPlayer, 
-            textMovementPlayer, 
+        UpdateInfoPanel(entity,
+            textNamePlayer,
+            textHealthPlayer,
+            textMovementPlayer,
             textActionPlayer);
     }
 
