@@ -99,10 +99,7 @@ public class GameManager : MonoBehaviour
                 if (mouseOverBlock)
                 {
                     Block hitBlock = blockHit.collider.GetComponentInParent<Block>();
-                    cellColorChanger.HighlightingCell(
-                        hitBlock,
-                        blockManager.availableMovementBlocks,
-                        cellColorChanger.ColorMove);
+                    cellColorChanger.HighlightPath(hitBlock, blockManager.movementBlockPaths);
 
                     if (playerInput.MouseClickLeft
                         && blockManager.availableMovementBlocks.Contains(hitBlock))
@@ -112,7 +109,6 @@ public class GameManager : MonoBehaviour
                             hitBlock);
                         hitBlock.currentMovementCost = blockManager.MaxCost;
                         currentEntityBlock.currentMovementCost = currentEntityBlock.MovementCost;
-                        //entityManager.MoveEntity(CurrentEntitySelected, hitBlock, blockPathToFollow);
                         StartCoroutine(entityMove.MoveEntity(
                             CurrentEntitySelected, 
                             hitBlock, 
@@ -138,7 +134,7 @@ public class GameManager : MonoBehaviour
                 }
                 else
                 {
-                    cellColorChanger.RemoveHighlight(cellColorChanger.ColorMove);
+                    cellColorChanger.RemoveHighlightPath();
                 }
 
                 break;

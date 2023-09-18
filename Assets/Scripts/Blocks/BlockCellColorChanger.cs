@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Note to self: clean up script. messy and UGLY
 public class BlockCellColorChanger : MonoBehaviour
 {
     [field: SerializeField]
@@ -14,6 +15,7 @@ public class BlockCellColorChanger : MonoBehaviour
     public Color ColorAttackArea { get; private set; }
 
     private Block currentHighlightBlock;
+    private List<Block> currentHighlightPath = new List<Block>();
 
     public void ChangeCellColor(Color color, Renderer renderer, MaterialPropertyBlock propBlock)
     {
@@ -68,6 +70,38 @@ public class BlockCellColorChanger : MonoBehaviour
         {
             RemoveHighlight(color);
         }
+    }
+
+    public void HighlightPath(Block hitBlock, List<List<Block>> blockPaths)
+    {
+        if (currentHighlightBlock != hitBlock)
+        {
+            RemoveHighlightPath();
+            currentHighlightBlock = hitBlock;
+            foreach (List<Block> blockList in blockPaths)
+            {
+                if (blockList.Contains(hitBlock))
+                {
+                    int lastIndex = blockList.IndexOf(hitBlock) + 1;
+                    currentHighlightPath =  blockList.GetRange(0, lastIndex);
+                    foreach (Block block in currentHighlightPath)
+                    {
+                        HighlightCell(block, ColorPointer);
+                    }
+                    break;
+                }
+            }
+        }
+    }
+
+    public void RemoveHighlightPath()
+    {
+        foreach (Block block in currentHighlightPath)
+        {
+            HighlightCell(block, ColorMove);
+        }
+
+        currentHighlightBlock = null;
     }
 
     public void HighlightCell(Block block, Color color)
